@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import com.example.hdltranspiler.HDLLexer;
 import com.example.hdltranspiler.HDLParser;
 import com.example.hdltranspiler.tree.InternalNode;
+import com.example.hdltranspiler.tree.Node;
 import com.example.hdltranspiler.tree.TreeParser;
 
 /**
@@ -20,7 +21,7 @@ import com.example.hdltranspiler.tree.TreeParser;
  */
 public class HdlTranspiler {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         String code = "module: hello; input: a, c; output:b, c;";
         CharStream input = CharStreams.fromString(code);
@@ -33,7 +34,7 @@ public class HdlTranspiler {
         ParseTree tree = parser.program();
         System.out.println(tree.toStringTree(parser));
         
-        InternalNode editableTree = TreeParser.parse(tree);
-
+        InternalNode editableTree = TreeParser.parse(tree, parser);
+        editableTree.print();
     }
 }

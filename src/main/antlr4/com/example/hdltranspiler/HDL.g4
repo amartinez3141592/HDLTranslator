@@ -22,11 +22,14 @@ input_def
 input_list
     : ID
     | ID SELECTOR INT END_SELECTOR
-    | input_list COMMA input_list
+    | input_list COMMA (
+        ID
+        | ID SELECTOR INT END_SELECTOR
+    )
     ;
  
 output_def
-    : OUTPUT DESCRIBE input_list
+    : OUTPUT DESCRIBE input_list 
     ;
 
 /*
