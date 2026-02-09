@@ -2,7 +2,7 @@
 // parser grammar Parser;
 // options { tokenVocab=ExprLexer; }
 // uncomment if the gramar is in another file, common in website test 
-grammar HDL_book;
+grammar HDL;
 
 
 program
