@@ -4,7 +4,6 @@
 // uncomment if the gramar is in another file, common in website test 
 grammar HDL;
 
-
 program
     : module_def ';'
     | module_def ';' input_def ';'
@@ -14,17 +13,20 @@ program
 module_def
     : MODULE DESCRIBE ID
     ;
+
+variable_def
+    : ID SELECTOR INT END_SELECTOR
+    | ID
+    ;
     
 input_def
     : INPUT DESCRIBE input_list
     ;
 
 input_list
-    : ID
-    | ID SELECTOR INT END_SELECTOR
+    : variable_def
     | input_list COMMA (
-        ID
-        | ID SELECTOR INT END_SELECTOR
+        variable_def
     )
     ;
  
@@ -32,6 +34,7 @@ output_def
     : OUTPUT DESCRIBE input_list 
     ;
 
+    
 /*
 program
     : stat EOF

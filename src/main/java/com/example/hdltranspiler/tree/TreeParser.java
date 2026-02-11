@@ -31,11 +31,14 @@ public class TreeParser {
                     .split("\\(")[1] // get the description
                     .split(" ")[0]; // delete spaces
 
-            return parse(
-                    new InternalNode(nodeDescription),
-                    node,
-                    parser
-            );
+            InternalNode root = new InternalNode(nodeDescription);
+            
+            for (ParseTree child : ((ParserRuleContext) node).children) {
+                parse(root, child, parser);
+            }
+            
+            return root;
+            
         } else if (node instanceof ErrorNode) {
             // It is an error node
             ErrorNode errorNode = (ErrorNode) node;
@@ -71,12 +74,12 @@ public class TreeParser {
                     .split("\\(")[1] // get the description
                     .split(" ")[0]; // delete spaces
 
-            parent.children.add(
+            parent.children.addLast(
                     new InternalNode(nodeDescription)
             );
 
             for (ParseTree child : ruleContext.children) {
-                parse(parent, child, parser);
+                parse((InternalNode) parent.children.getLast(), child, parser);
             }
         } else if (node instanceof ErrorNode) {
             // It is an error node
