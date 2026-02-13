@@ -1,7 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
-
 package com.example.hdltranspiler;
 
 import org.antlr.v4.runtime.CharStream;
@@ -13,11 +12,10 @@ import com.example.hdltranspiler.HDLLexer;
 import com.example.hdltranspiler.HDLParser;
 import com.example.hdltranspiler.operations.TreeBuilder;
 import com.example.hdltranspiler.tree.InternalNode;
-import com.example.hdltranspiler.tree.Node;
-import com.example.hdltranspiler.tree.TreeParser;
+import com.example.hdltranspiler.tree.CustomTreeEquivalent;
 
 /**
- *  
+ *
  * @author Alexis Martinez
  */
 public class HdlTranspiler {
@@ -25,7 +23,23 @@ public class HdlTranspiler {
     public static void main(String[] args) throws Exception {
 
 //        String code = "module: hello; input: c,a ,b, j[3]; output:c,a ,b, j[3];";
-        String code = "module: hello; input: c,d; output:c,f,g[3];";
+        String code = """
+                    MODULE: hello;
+                    INPUT: c,d,g[3],a;
+                    OUTPUT:c,f,g[3],h,d;
+                    MEMORY: a[3], b,ba, state, next_state;
+                    SEQUENCE:
+                        STEP(1):
+                          c = d;
+                          a = a;
+                          b<=a;
+                          b=a;
+                          a= b;
+                          b<=a;
+                          a =b;
+                        => ( a ) / ( 1 );
+                    END_SEQUENCE;                 
+                      """;
         CharStream input = CharStreams.fromString(code);
 
         HDLLexer lexer = new HDLLexer(input);
@@ -34,13 +48,13 @@ public class HdlTranspiler {
         HDLParser parser = new HDLParser(tokens);
 
         ParseTree tree = parser.program();
-        
+
         System.out.println(tree.toStringTree(parser));
-        
-        InternalNode editableTree = TreeParser.parse(tree, parser);
+
+        InternalNode editableTree = CustomTreeEquivalent.parse(tree, parser);
         editableTree.print();
         System.out.println();
-        
+
         TreeBuilder translated_tree = new TreeBuilder(editableTree);
         translated_tree.build();
         translated_tree.print();

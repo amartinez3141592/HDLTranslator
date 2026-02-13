@@ -13,4 +13,9 @@ public class Leaf implements Node {
     public Leaf(String value) {
         this.value = value;
     }
+
+    @Override
+    public Node clone() {
+        return new Leaf(value);
+    }
 }

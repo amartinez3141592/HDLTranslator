@@ -23,7 +23,19 @@ public class InternalNode implements Node {
     public void print() {
         print(this);
     }
-
+    
+    public InternalNode clone() {
+        InternalNode root = new InternalNode(description);
+        for(Node child :  this.children){
+            if (child instanceof InternalNode) {
+                root.children.add(((InternalNode) child).clone());
+            } else {
+                root.children.add(((Leaf) child).clone());
+            }
+        }
+        return root;
+    }
+    
     public void print(InternalNode parent) {
 
         for (Node node : parent.children) {

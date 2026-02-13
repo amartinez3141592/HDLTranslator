@@ -5,28 +5,26 @@
 grammar HDL;
 
 program
-    : module_def ';'
-    | module_def ';' input_def ';'
-    | module_def ';' input_def
-        ';' output_def ';'
+    : module_def ';' input_def
+        ';' output_def ';' memory_def ';' sequence_def ';' // 'endmodule' ';'
     ;
 module_def
     : MODULE DESCRIBE ID
     ;
 
 variable_def
-    : ID SELECTOR INT END_SELECTOR
+    : (ID SELECTOR NUMBER END_SELECTOR)
     | ID
     ;
     
 input_def
     : INPUT DESCRIBE input_list
     ;
-
+// recursion order was inverted
 input_list
     : variable_def
-    | input_list COMMA (
-        variable_def
+    | ( variable_def COMMA
+        input_list
     )
     ;
  
@@ -34,47 +32,83 @@ output_def
     : OUTPUT DESCRIBE input_list 
     ;
 
-    
+memory_def
+    : MEMORY DESCRIBE input_list 
+    ;
+
+sequence_def
+    : SEQUENCE DESCRIBE steps_def END_SEQUENCE
+//    | SEQUENCE DESCRIBE END_SEQUENCE si quiero agregarlo, modificar codigo
+    ;
+
+// IMPORTANT CHANGES HERE
+steps_def
+    : (STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition ';' )
+    | (STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition ';' steps_def)
+    ;
+
+step_transition
+    : TRANSITION LPAREN conditions RPAREN TRANSITION_TO LPAREN goto RPAREN   
+    ;
+
+step_def
+    : (( assign_memory | assign_output ) ';') 
+    | (( assign_memory | assign_output ) ';' step_def) 
+    ; 
+
+
+assign_output: ID EQ ID
+    ;
+
+assign_memory
+    : ID MEM_ASSIGN ID
+    ;
+// order changed
+conditions
+    : expr
+    | (expr COMMA conditions)
+    ;
+goto
+    : NUMBER
+    | (NUMBER COMMA goto)
+    ;
+
+expr: 
+//  | bit
+    | variable_def
+    | (NOT expr)
+    | (variable_def AND expr)
+    | (variable_def OR expr)
+    ;
 /*
-program
-    : stat EOF
-    | def EOF
+bit
+    : '0'
+    | '1'
     ;
-
-stat: ID '=' expr ';'
-    | expr ';'
-    ;
-
-def : ID '(' ID (',' ID)* ')' '{' stat* '}' ;
-
-expr: ID
-    | INT
-    | func
-    | 'not' expr
-    | expr 'and' expr
-    | expr 'or' expr
-    ;
-
-func : ID '(' expr (',' expr)* ')' ;
-
 */
-
-
 // lexer grammar ExprLexer;
 // uncomment on testing on a website, maybe it can be in diff files
 
+
+NUMBER : [0-9]+ ;
+MEM_ASSIGN : '<=';
+TRANSITION : '=>';
+TRANSITION_TO : '/';
+DOT : '.';
+SEQUENCE : 'SEQUENCE';
+END_SEQUENCE : 'END_SEQUENCE';
 MODULE : 'module';
-INPUT : 'input';
-OUTPUT : 'output';
-MEMORY : 'memory';
+INPUT : 'INPUT';
+OUTPUT : 'OUTPUT';
+MEMORY : 'MEMORY';
 DESCRIBE : ':';
 SELECTOR: '[';
 END_SELECTOR: ']';
+STEP: 'STEP';
 
-
-AND : 'and' ;
-OR : 'or' ;
-NOT : 'not' ;
+AND : 'AND' ;
+OR : 'OR' ;
+NOT : 'NOT' ;
 EQ : '=' ;
 COMMA : ',' ;
 SEMI : ';' ;
@@ -83,8 +117,6 @@ RPAREN : ')' ;
 LCURLY : '{' ;
 RCURLY : '}' ;
 
-
-INT : [-1-9]+ ;
 
 ID   : [a-zA-Z_] [a-zA-Z_0-9]* ; 
 // ID : [a-zA-Z_0-9] [a-zA-Z_0-9]* ; 

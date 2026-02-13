@@ -9,5 +9,5 @@ package com.example.hdltranspiler.tree;
  * @author Alexis Martinez
  */
 public interface Node {
-    
+    public Node clone();
 }
