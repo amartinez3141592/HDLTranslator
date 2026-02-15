@@ -8,6 +8,24 @@ package com.example.hdltranspiler.tree;
  *
  * @author Alexis Martinez
  */
-public interface Node {
-    public Node clone();
+public abstract class Node {
+
+    public String description;
+    public InternalNode parent;
+
+    public abstract Node clone();
+    public abstract Node clone_linked();
+
+    public InternalNode search_parent_with_description(String description) {
+        return search_parent_with_description(description, parent);
+    }
+
+    public InternalNode search_parent_with_description(String description, Node node) {
+        if (node.description.equals(description)) {
+
+            return (InternalNode) node;
+        } else {
+            return search_parent_with_description(description, node.parent);
+        }
+    }
 }

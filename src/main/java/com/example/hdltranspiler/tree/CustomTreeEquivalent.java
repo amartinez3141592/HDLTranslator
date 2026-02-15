@@ -35,7 +35,7 @@ public class CustomTreeEquivalent {
             }
             String nodeDescription = rule_names[idx];
 
-            InternalNode root = new InternalNode(nodeDescription);
+            InternalNode root = new InternalNode(nodeDescription, null);
 
             for (ParseTree child : ((ParserRuleContext) node).children) {
                 parse(root, child, parser);
@@ -66,7 +66,7 @@ public class CustomTreeEquivalent {
 
             // System.out.println("Token: " + terminalNode.getSymbol().getText());
             parent.children.add(
-                    new Leaf(terminalNode.getSymbol().getText())
+                    new Leaf(terminalNode.getSymbol().getText(), parent)
             );
 
         } else if (node instanceof ParserRuleContext) {
@@ -81,7 +81,7 @@ public class CustomTreeEquivalent {
             String nodeDescription = rule_names[idx];
 
             parent.children.addLast(
-                    new InternalNode(nodeDescription)
+                new InternalNode(nodeDescription, parent)
             );
             
             if (ruleContext.children != null) {

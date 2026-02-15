@@ -8,14 +8,21 @@ package com.example.hdltranspiler.tree;
  *
  * @author Alexis Martinez
  */
-public class Leaf implements Node {
-    public String value;
-    public Leaf(String value) {
-        this.value = value;
+public class Leaf extends Node {
+
+    public Leaf(String description, InternalNode parent) {
+        this.description = description;
     }
 
     @Override
-    public Node clone() {
-        return new Leaf(value);
+    public Leaf clone() {
+        return new Leaf(description, parent);
     }
+
+    @Override
+    public Node clone_linked() {
+        return new LeafLinked(description, parent, this);
+    }
+
+
 }

@@ -37,7 +37,7 @@ memory_def
     ;
 
 sequence_def
-    : SEQUENCE DESCRIBE steps_def END_SEQUENCE
+    : SEQUENCE LPAREN NUMBER RPAREN DESCRIBE steps_def END_SEQUENCE
 //    | SEQUENCE DESCRIBE END_SEQUENCE si quiero agregarlo, modificar codigo
     ;
 
@@ -97,7 +97,7 @@ TRANSITION_TO : '/';
 DOT : '.';
 SEQUENCE : 'SEQUENCE';
 END_SEQUENCE : 'END_SEQUENCE';
-MODULE : 'module';
+MODULE : 'MODULE';
 INPUT : 'INPUT';
 OUTPUT : 'OUTPUT';
 MEMORY : 'MEMORY';

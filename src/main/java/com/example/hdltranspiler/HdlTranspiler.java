@@ -27,8 +27,8 @@ public class HdlTranspiler {
                     MODULE: hello;
                     INPUT: c,d,g[3],a;
                     OUTPUT:c,f,g[3],h,d;
-                    MEMORY: a[3], b,ba, state, next_state;
-                    SEQUENCE:
+                    MEMORY: a[3], b,ba;
+                    SEQUENCE(6):
                         STEP(1):
                           c = d;
                           a = a;
