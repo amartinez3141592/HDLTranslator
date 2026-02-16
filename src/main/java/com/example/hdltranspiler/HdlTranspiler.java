@@ -25,19 +25,24 @@ public class HdlTranspiler {
 //        String code = "module: hello; input: c,a ,b, j[3]; output:c,a ,b, j[3];";
         String code = """
                     MODULE: hello;
-                    INPUT: c,d,g[3],a;
-                    OUTPUT:c,f,g[3],h,d;
-                    MEMORY: a[3], b,ba;
+                    INPUT: touched, switch, buttons[3];
+                    OUTPUT: red_led, turn_on,rgb[3];
+                    MEMORY: mem_1[3], mem_2, mem_3;
                     SEQUENCE(6):
-                        STEP(1):
-                          c = d;
-                          a = a;
-                          b<=a;
-                          b=a;
-                          a= b;
-                          b<=a;
-                          a =b;
-                        => ( a ) / ( 1 );
+                        STEP(0):
+                          red_led = touched;
+                          red_led = switch;
+                          mem_2 <= switch;
+                          red_led= rbg;
+                          mem_1<= buttons;
+                        => ( touched ) / ( 1 );
+                      STEP(1):
+                        red_led = touched;
+                        red_led = switch;
+                        mem_2 <= switch;
+                        red_led= rbg;
+                        mem_1<= buttons;
+                      => ( touched ) / ( 1 );
                     END_SEQUENCE;                 
                       """;
         CharStream input = CharStreams.fromString(code);

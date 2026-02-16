@@ -12,6 +12,7 @@ public class Leaf extends Node {
 
     public Leaf(String description, InternalNode parent) {
         this.description = description;
+        this.parent = parent;
     }
 
     @Override
@@ -22,6 +23,16 @@ public class Leaf extends Node {
     @Override
     public Node clone_linked() {
         return new LeafLinked(description, parent, this);
+    }
+    
+    @Override
+    public String toString() {
+        return this.description.toString();
+    }
+
+    @Override
+    public void print() {
+        System.out.print(description);
     }
 
 

@@ -9,10 +9,10 @@ package com.example.hdltranspiler.tree;
  * @author Alexis Martinez
  */
 public class LeafLinked extends Leaf {
-    public Leaf linked_to;
-    public LeafLinked(String description, InternalNode parent, Leaf linked_to) {
+    public Leaf reference_tree;
+    public LeafLinked(String description, InternalNode parent, Leaf reference_tree) {
         super(description, parent);
-        this.linked_to = linked_to;
+        this.reference_tree = reference_tree;
     }
 
 }

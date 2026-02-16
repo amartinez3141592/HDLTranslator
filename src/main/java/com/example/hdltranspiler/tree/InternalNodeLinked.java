@@ -9,15 +9,15 @@ package com.example.hdltranspiler.tree;
  * @author Alexis Martinez
  */
 public class InternalNodeLinked extends InternalNode {
-    public InternalNode linked_to;
+    public InternalNode reference_tree;
     
     public InternalNodeLinked(
             String description,
             InternalNode parent, 
-            InternalNode linked_to
+            InternalNode reference_tree
     ) {
         super(description, parent);
-        this.linked_to = linked_to;
+        this.reference_tree = reference_tree;
     }
 
 }

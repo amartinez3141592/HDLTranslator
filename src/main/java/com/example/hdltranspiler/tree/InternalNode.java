@@ -22,16 +22,13 @@ public class InternalNode extends Node {
         this.description = description;
     }
 
-    public void print() {
-        print(this);
-    }
     
     public InternalNodeLinked clone_linked() {
         InternalNodeLinked root = new InternalNodeLinked(description, parent, this);
         
-        
-        for (Node child : this.children) {
+        for (Node child : children) {
             root.children.add(child.clone_linked());
+        
         }
         return root;
     }
@@ -45,14 +42,18 @@ public class InternalNode extends Node {
         return root;
     }
 
-    public void print(InternalNode parent) {
+    public String toString() {
+        String r = "";
+        for (Node node : children) {
+            r+= node.toString();
+        }
+        return r;
+    }
+    
+    public void print() {
 
-        for (Node node : parent.children) {
-            if (node instanceof InternalNode) {
-                print((InternalNode) node);
-            } else if (node instanceof Leaf) {
-                System.out.print(node.description);
-            }
+        for (Node node : this.children) {
+            node.print();
         }
     }
 
@@ -67,22 +68,19 @@ public class InternalNode extends Node {
     }
 
     public Node getDescendencyByDescription(String description) {
-        return getDescendencyByDescription(this, description);
-    }
-
-    public Node getDescendencyByDescription(InternalNode parent, String description) {
         Node n = null;
 
-        for (Node child : parent.children) {
+        for (Node child : children) {
             if (child.description.equals(description)) {
                 n = child;
             }
         }
 
         if (n == null) {
-            for (Node child : parent.children) {
+            for (Node child : children) {
                 if (child instanceof InternalNode) {
-                    return getDescendencyByDescription((InternalNode) child, description);
+                    return ((InternalNode) child)
+                            .getDescendencyByDescription(description);
                 }
             }
         } else {
@@ -114,6 +112,7 @@ public class InternalNode extends Node {
 
     }
 
+    @Deprecated
     public void replaceAtIndexByDescription(String description, Node node, int index_of_result) {
         ArrayList<Node> replaced_list = getChildrensByDescription(description);
         Node replaced = replaced_list.get(index_of_result);
@@ -124,48 +123,45 @@ public class InternalNode extends Node {
         replaced.parent.children.add(actual_idx, node);
 
     }
-
+    
     public ArrayList<Leaf> getAllDescendentLeaf() {
-        return getAllDescendentLeaf(this);
-    }
-
-    public ArrayList<Leaf> getAllDescendentLeaf(InternalNode node) {
         ArrayList<Leaf> n = new ArrayList<>();
 
-        for (Node child : node.children) {
+        for (Node child : children) {
             if (child instanceof Leaf) {
                 n.add((Leaf) child);
             } else {
-                n.addAll(getAllDescendentLeaf((InternalNode) child));
+                n.addAll(((InternalNode) child).getAllDescendentLeaf());
             }
         }
 
         return n;
     }
+    
     public ArrayList<InternalNode> getAllDescendencyByDescription(String description) {
-        return getAllDescendencyByDescription(description, this);
-    }
-
-    public ArrayList<InternalNode> getAllDescendencyByDescription(String description, InternalNode node) {
         ArrayList<InternalNode> node_list = new ArrayList<>();
 
-        for (Node child : node.children) {
+        for (Node child : children) {
             if ((child instanceof InternalNode)) {
                 
                 if (child.description.equals(description)) {
                     node_list.add((InternalNode) child);
                 }
                 
-                node_list.addAll(
-                        getAllDescendencyByDescription(
-                                description,
-                                (InternalNode) child
-                        )
+                node_list.addAll(((InternalNode) child).getAllDescendencyByDescription(
+                                description)
                 );
             }
         }
 
         return node_list;
     }
-
+    
+    public InternalNode findAscendency(String description) {
+        if(this.description.equals(description)) {
+            return this;
+        } else {
+            return this.parent.findAscendency(description);
+        }
+    }
 }

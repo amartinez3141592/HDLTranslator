@@ -15,7 +15,8 @@ public abstract class Node {
 
     public abstract Node clone();
     public abstract Node clone_linked();
-
+    public abstract void print();
+    
     public InternalNode search_parent_with_description(String description) {
         return search_parent_with_description(description, parent);
     }
