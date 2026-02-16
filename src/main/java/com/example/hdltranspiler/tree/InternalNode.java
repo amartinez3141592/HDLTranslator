@@ -5,8 +5,6 @@
 package com.example.hdltranspiler.tree;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 
 /**
  *
@@ -16,15 +14,14 @@ public class InternalNode extends Node {
 
     public ArrayList<Node> children;
 
-    public InternalNode(String description, InternalNode parent) {
-        this.parent = parent;
+    public InternalNode(String description) {
         this.children = new ArrayList<Node>();
         this.description = description;
     }
 
     
     public InternalNodeLinked clone_linked() {
-        InternalNodeLinked root = new InternalNodeLinked(description, parent, this);
+        InternalNodeLinked root = new InternalNodeLinked(description, this);
         
         for (Node child : children) {
             root.children.add(child.clone_linked());
@@ -34,7 +31,7 @@ public class InternalNode extends Node {
     }
     
     public InternalNode clone() {
-        InternalNode root = new InternalNode(description, parent);
+        InternalNode root = new InternalNode(description);
         
         for (Node child : this.children) {
             root.children.add(child.clone());
@@ -86,18 +83,12 @@ public class InternalNode extends Node {
         } else {
             return n;
         }
-
-        // TODO: verify if this works i mean if i return before this
-        // return are not going to be executed
         return null;
-
     }
 
     public void removeChildrenByDescription(String description) {
         Node n = getChildrenByDescription(description);
-        n.parent.children.remove(n);
-        n.parent = null;
-
+        children.remove(n);
     }
 
     public ArrayList<Node> getChildrensByDescription(String description) {
@@ -112,18 +103,6 @@ public class InternalNode extends Node {
 
     }
 
-    @Deprecated
-    public void replaceAtIndexByDescription(String description, Node node, int index_of_result) {
-        ArrayList<Node> replaced_list = getChildrensByDescription(description);
-        Node replaced = replaced_list.get(index_of_result);
-
-        int actual_idx = replaced.parent.children.indexOf(replaced);
-
-        replaced.parent.children.remove(actual_idx);
-        replaced.parent.children.add(actual_idx, node);
-
-    }
-    
     public ArrayList<Leaf> getAllDescendentLeaf() {
         ArrayList<Leaf> n = new ArrayList<>();
 
@@ -155,13 +134,5 @@ public class InternalNode extends Node {
         }
 
         return node_list;
-    }
-    
-    public InternalNode findAscendency(String description) {
-        if(this.description.equals(description)) {
-            return this;
-        } else {
-            return this.parent.findAscendency(description);
-        }
     }
 }

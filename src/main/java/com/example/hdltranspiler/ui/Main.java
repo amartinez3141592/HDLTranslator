@@ -2,18 +2,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.example.hdltranspiler.tree;
+package com.example.hdltranspiler.ui;
 
 /**
  *
  * @author Alexis Martinez
  */
-public abstract class Node {
-
-    public String description;
-
-    public abstract Node clone();
-    public abstract Node clone_linked();
-    public abstract void print();
-    
+public class Main {
+    public static void main(String args[]) {
+    }
 }

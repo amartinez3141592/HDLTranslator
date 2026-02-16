@@ -57,13 +57,13 @@ step_def
     ; 
 
 
-assign_output: ID EQ ID
+assign_output: ID EQ expr
     ;
 
 assign_memory
-    : ID MEM_ASSIGN ID
+    : ID MEM_ASSIGN expr
     ;
-// order changed
+
 conditions
     : expr
     | (expr COMMA conditions)
@@ -84,8 +84,8 @@ expr:
 bit
     : '0'
     | '1'
-    ;
-*/
+    ;*/
+
 // lexer grammar ExprLexer;
 // uncomment on testing on a website, maybe it can be in diff files
 
@@ -106,9 +106,9 @@ SELECTOR: '[';
 END_SELECTOR: ']';
 STEP: 'STEP';
 
-AND : 'AND' ;
-OR : 'OR' ;
-NOT : 'NOT' ;
+AND : '&&' ;
+OR : '||' ;
+NOT : '!' ;
 EQ : '=' ;
 COMMA : ',' ;
 SEMI : ';' ;

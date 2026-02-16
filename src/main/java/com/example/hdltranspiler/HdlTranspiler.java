@@ -20,9 +20,13 @@ import com.example.hdltranspiler.tree.CustomTreeEquivalent;
  */
 public class HdlTranspiler {
 
-    public static void main(String[] args) throws Exception {
+    private static CharStream input;
+    private static HDLLexer lexer;
+    private static CommonTokenStream tokens;
+    private static HDLParser parser;
+    private static ParseTree tree;
 
-//        String code = "module: hello; input: c,a ,b, j[3]; output:c,a ,b, j[3];";
+    public static void main(String[] args) throws Exception {
         String code = """
                     MODULE: hello;
                     INPUT: touched, switch, buttons[3];
@@ -30,38 +34,55 @@ public class HdlTranspiler {
                     MEMORY: mem_1[3], mem_2, mem_3;
                     SEQUENCE(6):
                         STEP(0):
-                          red_led = touched;
-                          red_led = switch;
-                          mem_2 <= switch;
-                          red_led= rbg;
-                          mem_1<= buttons;
-                        => ( touched ) / ( 1 );
-                      STEP(1):
-                        red_led = touched;
-                        red_led = switch;
-                        mem_2 <= switch;
-                        red_led= rbg;
-                        mem_1<= buttons;
-                      => ( touched ) / ( 1 );
+                            red_led = !touched && switch || switch;
+                            red_led = switch || touched;
+                            mem_2 <= !turn_on;
+                            red_led= rbg && switch;
+                            mem_1<= buttons;
+                        => ( touched, !touched ) / ( 1 , 0 );
+                        STEP(1):
+                            red_led = !touched && switch || switch;
+                            red_led = switch || touched;
+                            mem_2 <= !turn_on;
+                            red_led= rbg && switch;
+                            mem_1<= buttons;
+                        => ( switch ) / ( 2 );
+                      
+                        STEP(2):
+                            red_led = !touched && switch || switch;
+                            red_led = switch || touched;
+                            mem_2 <= !turn_on;
+                            red_led= rbg && switch;
+                            mem_1<= buttons;
+                        => ( switch ) / ( 0 );
+                                      
                     END_SEQUENCE;                 
                       """;
-        CharStream input = CharStreams.fromString(code);
+        System.out.print(transpile(code));
 
-        HDLLexer lexer = new HDLLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
+    }
 
-        HDLParser parser = new HDLParser(tokens);
+    public static String transpile(String code) throws Exception {
 
-        ParseTree tree = parser.program();
+        input = CharStreams.fromString(code);
+
+        lexer = new HDLLexer(input);
+        tokens = new CommonTokenStream(lexer);
+        parser = new HDLParser(tokens);
+
+        tree = parser.program();
 
         System.out.println(tree.toStringTree(parser));
 
         InternalNode editableTree = CustomTreeEquivalent.parse(tree, parser);
-        editableTree.print();
-        System.out.println();
 
         TreeBuilder translated_tree = new TreeBuilder(editableTree);
         translated_tree.build();
-        translated_tree.print();
+
+        return translated_tree.toString();
+    }
+
+    public static String toStringTreeForLookingForSyntaxErrors() {
+        return tree.toStringTree(parser);
     }
 }

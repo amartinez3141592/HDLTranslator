@@ -13,10 +13,9 @@ public class InternalNodeLinked extends InternalNode {
     
     public InternalNodeLinked(
             String description,
-            InternalNode parent, 
             InternalNode reference_tree
     ) {
-        super(description, parent);
+        super(description);
         this.reference_tree = reference_tree;
     }
 

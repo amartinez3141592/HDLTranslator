@@ -30,48 +30,50 @@ public class TreeBuilder {
         System.out.println();
     }
 
+    public String toString() {
+        return editableTree.toString();
+    }
+
+    public String add_tab(int n) {
+        String a = "";
+        for (int i = 0; i < n; i++) {
+            a += "\t";
+        }
+        return a;
+    }
+
     public void module_def_transpile(InternalNode module_def) {
         module_def.children.remove(1);
-        module_def.children.add(1, new Leaf(" ", module_def));
+        module_def.children.add(1, new Leaf(" "));
     }
 
     public void program_transpile(InternalNode program_def) {
-        // node.replaceAtIndexByDescription(";", new Leaf("(\n\t", node), 0);
-        // node.replaceAtIndexByDescription(";", new Leaf("(\n\t", node), 2);
+        // delete first ; and put (
+        program_def.children.get(1).description = "(\n";
+        program_def.children.get(3).description = ",\n";
 
-        program_def.children.remove(1);
-        program_def.children.add(1, new Leaf("(\n\t", program_def));
+        program_def.getChildrenByDescription(";").description = ",\n";
+        program_def.getChildrenByDescription(";").description = ",\n";
+
+        InternalNodeLinked input_def = (InternalNodeLinked) program_def.getChildrenByDescription("input_def");
+        input_def_transpile(input_def, add_tab(1) + "input logic", ",\n");
+
+        InternalNodeLinked output_def = (InternalNodeLinked) program_def.getChildrenByDescription("output_def");
+        input_def_transpile(output_def, add_tab(1) + "output logic", ",\n");
 
         program_def.children.remove(5);
-        program_def.children.add(5, new Leaf("\n);\n\t", program_def));
+        program_def.children.add(5, new Leaf("\n);\n"));
 
-        Node child_node;
-        Leaf child_leaf;
+        InternalNodeLinked module_def = (InternalNodeLinked) program_def.getChildrenByDescription("module_def");
+        module_def_transpile(module_def);
 
-        for (int i = 0; i < 5; i++) {
-            child_node = program_def.children.get(i);
-            if (child_node instanceof Leaf) {
-                child_leaf = (Leaf) child_node;
-                if (child_leaf.description.equals(";")) {
-                    child_leaf.description = ",\n\t";
-                }
-            }
-        }
+        InternalNodeLinked sequence_def = (InternalNodeLinked) program_def.getChildrenByDescription("sequence_def");
+        sequence_def_transpile(
+                sequence_def,
+                (InternalNodeLinked) program_def.getChildrenByDescription("memory_def"),
+                output_def.reference_tree.clone());
 
-        InternalNode body = new InternalNode("body", program_def);
-        program_def.children.add(body);
-
-        body.children.add(program_def.children.get(6));// memory 
-        body.children.add(program_def.children.get(7)); // ;
-
-        body.children.add(program_def.children.get(8)); // sequence_def
-        body.children.add(program_def.children.get(9)); // ;
-
-        program_def.children.remove(9); // sequence_def
-        program_def.children.remove(8); // ;
-        program_def.children.remove(7); // memory
-        program_def.children.remove(6); // ;
-
+        program_def.children.get(9).description = "endmodule";
     }
 
     public void input_def_transpile(
@@ -80,7 +82,7 @@ public class TreeBuilder {
             String input_divider) {
         //if (((Leaf) node.children.get(1)).description.equals(":")) {
         input_def.children.remove(1);
-        input_def.children.add(1, new Leaf(" ", input_def));
+        input_def.children.add(1, new Leaf(" "));
 
         input_def.children.get(0).description = tag_of_elements;
         // first input_def 
@@ -95,15 +97,14 @@ public class TreeBuilder {
             String input_divider
     ) {
         if (list_node.children.size() == 3) {
-            /*i
-         input_def             input_def
-                |                |    |
-                input_list       il , s or leaf  
-                | |  |      -->  |    |
-                | |  |           |    |   f,s are leaf or trees
-                f ,  s           f    
-                                    
-             */
+//            i
+//         input_def             input_def
+//                |                |    |
+//                input_list       il , s or leaf  
+//                | |  |      -->  |    |
+//                | |  |           |    |   f,s are leaf or trees
+//                f ,  s           f    
+
             InternalNode last_element = (InternalNode) list_node.children.getLast();
             add_input(input_def, last_element, tag_of_elements, input_divider);
             list_node.children.removeLast(); // remove list
@@ -113,18 +114,23 @@ public class TreeBuilder {
         }
     }
 
-    public void add_input(InternalNode input_def, Node variable_or_list_def,
+    public void add_input(InternalNode input_def, InternalNode list_def,
             String tag_of_elements, String input_divider) {
-        input_def.children.add(new Leaf(input_divider, input_def));
+        input_def.children.add(new Leaf(input_divider));
 
-        input_def.children.add(new Leaf(tag_of_elements, input_def));
-        input_def.children.add(new Leaf(" ", input_def));
+        input_def.children.add(new Leaf(tag_of_elements));
+        input_def.children.add(new Leaf(" "));
         //InternalNode in = new InternalNode("input_list");
         //input_def_node.children.add(in);
 
         //in.children.add(variable_def);
-        input_def.children.add(variable_or_list_def);
+        input_def.children.add(list_def);
 
+        InternalNode variable_def = (InternalNode) list_def.getDescendencyByDescription("variable_def");
+
+        if (variable_def.children.size() == 4) {
+            array_transpile(variable_def);
+        }
     }
 
     public void array_transpile(InternalNode variable_def) {
@@ -134,13 +140,13 @@ public class TreeBuilder {
         ) - 1;
 
         variable_def.children.clear();
-        variable_def.children.add(new Leaf("[", variable_def));
-        variable_def.children.add(new Leaf(size.toString(), variable_def));
-        variable_def.children.add(new Leaf(":", variable_def));
-        variable_def.children.add(new Leaf("0", variable_def));
-        variable_def.children.add(new Leaf("]", variable_def));
-        variable_def.children.add(new Leaf(" ", variable_def));
-        variable_def.children.add(new Leaf(variable, variable_def));
+        variable_def.children.add(new Leaf("["));
+        variable_def.children.add(new Leaf(size.toString()));
+        variable_def.children.add(new Leaf(":"));
+        variable_def.children.add(new Leaf("0"));
+        variable_def.children.add(new Leaf("]"));
+        variable_def.children.add(new Leaf(" "));
+        variable_def.children.add(new Leaf(variable));
 
     }
 
@@ -150,7 +156,7 @@ public class TreeBuilder {
     ) {
 
         type_def_state.children.add(new Leaf(
-                "typedef enum logic [" + (n_steps - 1) + ":0] {\n", type_def_state
+                add_tab(1) + "typedef enum logic [" + (n_steps - 1) + ":0] {\n"
         ));
 
         String str_binary = "";
@@ -165,23 +171,20 @@ public class TreeBuilder {
         // 10000000 size n_steps
         for (int i = 0; i < n_steps; i++) {
             type_def_state.children.add(new Leaf(
-                    "\t\tS" + i + " = " + n_steps + "'b" + str_binary + ",\n", type_def_state
+                    add_tab(2) + "S" + i + " = " + n_steps + "'b" + str_binary + ",\n"
             ));
             str_binary = "0" + str_binary.substring(0, n_steps - 1);
         }
-        /*
+
         type_def_state.children.add(new Leaf(
-                + "S3 = b'011,\n"
-         */
-        type_def_state.children.add(new Leaf(
-                "\t} state_t;\n", type_def_state
+                add_tab(1) + "} state_t;\n"
         ));
         type_def_state.children.add(new Leaf(
-                "\tstate_t next_state;\n", type_def_state
+                add_tab(1) + "state_t next_state;\n"
         ));
 
         type_def_state.children.add(new Leaf(
-                "\tstate_t state;\n", type_def_state
+                add_tab(1) + "state_t state;\n"
         ));
 
     }
@@ -189,8 +192,8 @@ public class TreeBuilder {
     private void create_always_ff(InternalNode sequence_def, InternalNode memory_def) {
 
         sequence_def.children.add(new Leaf(
-                "always_ff @(posedge clk or negedge reset) begin\n"
-                + "\tif (!reset) begin\n", sequence_def
+                add_tab(1) + "always_ff @(posedge clk or negedge reset) begin\n"
+                + add_tab(2) + "if (!reset) begin\n"
         ));
 
         for (InternalNode node : memory_def.getAllDescendencyByDescription("variable_def")) {
@@ -200,8 +203,7 @@ public class TreeBuilder {
                 // variable
                 aux_str_binary = "0";
                 sequence_def.children.add(new Leaf(
-                        "\t\t" + var_name + " <= 1'b" + aux_str_binary + ";\n",
-                        sequence_def
+                        add_tab(3) + var_name + " <= 1'b" + aux_str_binary + ";\n"
                 ));
 
             } else if (node.children.size() == 4) {
@@ -211,293 +213,95 @@ public class TreeBuilder {
                     aux_str_binary += "0";
                 }
                 sequence_def.children.add(new Leaf(
-                        "\t\t" + var_name + " <= " + size_array + "'b" + aux_str_binary + ";\n",
-                        sequence_def
+                        add_tab(3) + var_name + " <= " + size_array + "'b" + aux_str_binary + ";\n"
                 ));
             }
         }
         sequence_def.children.add(new Leaf(
-                "\t\tstate <= S0;\n"
-                + "\tend else begin\n", sequence_def
+                add_tab(3) + "state <= S0;\n"
+                + add_tab(2) + "end else begin\n"
         ));
 
         for (InternalNode node : memory_def.getAllDescendencyByDescription("variable_def")) {
             String var_name = node.children.get(0).description;
             sequence_def.children.add(new Leaf(
-                    "\t\t" + var_name + " <= next_" + var_name + ";\n",
-                    sequence_def
+                    add_tab(3) + var_name + " <= next_" + var_name + ";\n"
             ));
         }
 
         sequence_def.children.add(new Leaf(
-                "\t\tstate <= next_state;\n"
-                + "\tend;\n"
-                + "end;", sequence_def
+                add_tab(3) + "state <= next_state;\n"
         ));
+        sequence_def.children.add(new Leaf(
+                add_tab(2) + "end\n"
+        ));
+
+        sequence_def.children.add(new Leaf(
+                add_tab(1) + "end\n"
+        ));
+
     }
 
-    private void create_memory_declaration(InternalNode sequence_def, InternalNode memory_def_clone) {
+    private void create_memory_declaration(InternalNode sequence_def, InternalNode new_memory_def) {
         // get memory_def from reference and add it to the sequence 
         // as memory definition of next, needed because i made it inspirated by
         // Mealy 
         // we add a memory def with some modifications
-        memory_def_clone.children.get(0).description = "logic";
-        memory_def_clone.children.get(1).description = " ";
+        input_def_transpile(new_memory_def, add_tab(1) + "logic", ";\n");
 
-        sequence_def.children.add(memory_def_clone);
-        sequence_def.children.add(new Leaf(";", sequence_def));
+        // return new_memory_def ?
+        InternalNode memory_def_with_next = new_memory_def.clone();
 
-        for (InternalNode node : memory_def_clone.getAllDescendencyByDescription("variable_def")) {
+        sequence_def.children.add(memory_def_with_next);
+        sequence_def.children.add(new Leaf(";\n"));
+
+        for (InternalNode node : memory_def_with_next.getAllDescendencyByDescription("variable_def")) {
             Leaf leaf = (Leaf) node.children.get(0);
             leaf.description = "next_" + leaf.description;
         }
     }
 
-    public void sequence_def_transpile(InternalNode sequence_def) {
+    public void sequence_def_transpile(InternalNode sequence_def, InternalNodeLinked memory_def, InternalNode output_ref) {
 
         InternalNode sequence_ref = ((InternalNodeLinked) sequence_def).reference_tree;
-        InternalNode program_ref = sequence_ref.findAscendency("program");
-        InternalNode memory_ref = (InternalNode) program_ref
-                .getChildrenByDescription("memory_def");
-        InternalNode output_ref = (InternalNode) program_ref
-                .getChildrenByDescription("output_def");
-        // InternalNode steps_memory_def = (InternalNode) sequence_ref.getChildrenByDescription("steps_def");
 
         int n_steps = Integer.parseInt(sequence_ref.children.get(2).description);
 
-        InternalNode steps_memory_def = (InternalNode) sequence_def.children.get(5);
-        // InternalNode steps_memory_def = 
-        steps_memory_def.description = "steps_on_always_def";
-
-        /* commented because of exists build */
-        for (Node steps_def : steps_memory_def.getAllDescendencyByDescription("steps_def")) {
-            steps_def.description = "steps_on_always_def";
-        }
-
-        /**/
-        InternalNode type_def_state = new InternalNode("type_def_state", sequence_def);
+        InternalNode type_def_state = new InternalNode("type_def_state");
 
         sequence_def.children.clear();
 
-        create_memory_declaration(sequence_def, memory_ref.clone());
+        create_memory_declaration(sequence_def, memory_def);
         create_type_def_state(type_def_state, n_steps);
         sequence_def.children.add(type_def_state);
-        create_always_ff(sequence_def, memory_ref.clone());
-        create_always_comb(sequence_def, memory_ref.clone(), output_ref.clone(), sequence_ref.clone());
+        create_always_ff(sequence_def, memory_def.reference_tree);
+        create_always_comb(sequence_def,
+                memory_def.reference_tree,
+                output_ref.clone(),
+                sequence_ref.clone());
 
-        sequence_def.children.add(new Leaf("end;", sequence_def));
+        sequence_def.children.add(new Leaf(add_tab(1) + "end\n"));
 
     }
 
     public void build() {
-        build(editableTree);
-    }
-
-    public void build(InternalNode parent) {
-
-        if (parent.description.equals("program")) {
-            program_transpile(parent);
-
-            System.out.println(parent.description);
-            print();
-
-        } else if (parent.description.equals("module_def")) {
-            module_def_transpile(parent);
-
-            System.out.println(parent.description);
-            print();
-
-        } else if (parent.description.equals("input_def")) {
-            input_def_transpile(parent, "input logic", ",\n\t");
-
-            System.out.println(parent.description);
-            print();
-
-        } else if (parent.description.equals("output_def")) {
-            input_def_transpile(parent, "output logic", ",\n\t");
-
-            System.out.println(parent.description);
-            print();
-
-        } else if (parent.description.equals("memory_def")) {
-
-            input_def_transpile(parent, "logic", ";\n\t");
-            System.out.println(parent.description);
-            print();
-
-        } else if (parent.description.equals("variable_def")) {
-
-            if (parent.children.size() == 4) {
-                array_transpile(parent);
-            }
-            
-        } else if (parent.description.equals("sequence_def")) {
-            sequence_def_transpile(parent);
-
-        } else if (parent.description.equals("step_transitions_def")) {
-
-            step_transitions_def_transpile(parent);
-        } else if (parent.description.equals("steps_on_always_def")) {
-
-            steps_def_on_always_transpile(parent);
-        }
-
-        for (Node child : parent.children) {
-            if (child instanceof Leaf) {
-                build(parent, (Leaf) child);
-            } else if (child instanceof InternalNode) {
-                build((InternalNode) child);
-            }
-        }
-    }
-
-    public void build(InternalNode parent, Leaf node) {
-
-    }
-
-    public void delete_assign_output_def(InternalNode step_def) {
-        String description = ((InternalNode) step_def.children.getFirst()).description;
-        if ((step_def.children.size() == 3)
-                && description.equals("assign_output")) {
-            // when steps_def -> step_def with 3 length
-            // and desired deletion node in first place 
-
-            InternalNode next_step_def = (InternalNode) step_def.children.get(2);
-            step_def.children = next_step_def.children;
-            delete_assign_output_def(step_def);
-
-        } else if (description.equals("assign_output")) {
-            // size 1 and desired deletion node is on the only one
-            step_def.children.clear();
-        } else if ((!description.equals("assign_output")) && (step_def.children.size() == 3)) {
-            // when the first node is not the actual desired deletion node
-            // and size is 3, go to the other function because if there is
-            // a desired node in the last place, i must need access to parent
-            // because i must need to delete the last COMMA
-            InternalNode next_step_def = (InternalNode) step_def.children.get(2);
-            delete_assign_output_def(step_def, next_step_def);
-        }
-
-    }
-
-    // step, instrucions inside that step
-    public void delete_assign_output_def(InternalNode parent, InternalNode step_def) {
-        String description = ((InternalNode) step_def.children.getFirst()).description;
-        if ((step_def.children.size() == 3)
-                && description.equals("assign_output")) {
-
-            // when step_def -> step_def with 3 length
-            // and desired deletion node in first place
-            InternalNode next_step_def = (InternalNode) step_def.children.get(2);
-            step_def.children = next_step_def.children;
-            delete_assign_output_def(parent, step_def);
-
-        } else if (description.equals("assign_output")) {
-            // if the desired deletion node is the actual first node, delete the
-            // actual node and the comma, and mantain the parent because there
-            // is no problem with node parent because has already been passed
-            // in the recursion
-            parent.children.remove(1);
-            parent.children.remove(0);
-            step_def.children.clear();
-        } else if (step_def.children.size() == 3) {
-            // continues otherwise
-            InternalNode next_step_def = (InternalNode) step_def.children.get(2);
-            delete_assign_output_def(step_def, next_step_def);
-        }
-
-    }
-
-    public void delete_assign_memory_def(InternalNode step_def) {
-        String description = ((InternalNode) step_def.children.getFirst()).description;
-        if ((step_def.children.size() == 3)
-                && description.equals("assign_memory")) {
-            InternalNode next_step_def = (InternalNode) step_def.children.get(2);
-            step_def.children = next_step_def.children;
-            delete_assign_memory_def(step_def);
-
-        } else if (description.equals("assign_memory")) {
-            step_def.children.clear();
-        } else if ((!description.equals("assign_memory")) && step_def.children.size() == 3) {
-            InternalNode next_step_def = (InternalNode) step_def.children.get(2);
-
-            delete_assign_memory_def(step_def, next_step_def);
-        }
-
-    }
-
-    public void delete_assign_memory_def(InternalNode parent, InternalNode step_def) {
-        String description = ((InternalNode) step_def.children.getFirst()).description;
-        if ((step_def.children.size() == 3)
-                && description.equals("assign_memory")) {
-            InternalNode next_step_def = (InternalNode) step_def.children.get(2);
-            step_def.children = next_step_def.children;
-            delete_assign_memory_def(parent, step_def);
-
-        } else if (description.equals("assign_memory")) {
-            parent.children.remove(1);
-            parent.children.remove(0);
-            step_def.children.clear();
-        } else if (step_def.children.size() == 3) {
-            InternalNode next_step_def = (InternalNode) step_def.children.get(2);
-            delete_assign_memory_def(step_def, next_step_def);
-        }
-
-    }
-
-    public void step_transitions_def_transpile(InternalNode parent) {
-        InternalNode step_def = (InternalNode) parent.children.get(5);
-        // delete output and input because i dont use it
-        delete_assign_memory_def(step_def);
-        delete_assign_output_def(step_def);
-
-    }
-
-    public void steps_def_on_always_transpile(InternalNode parent) {
-
-        InternalNode step_def = (InternalNode) parent.children.get(5);
-
-        parent.children.get(1).description = "S";
-        parent.children.get(4).description = ": begin\n";
-        parent.children.get(7).description = "end\n";
-
-        // remove transitions, dont use it
-        parent.children.remove(6);
-        parent.children.remove(3);
-        parent.children.remove(0);
-    }
-    // OK
-    public void step_comb_def_transpile(InternalNode step_comb_def) {
-        InternalNode assign = (InternalNode) step_comb_def.children.get(0);
-        assign.children.get(1).description = "=";
-
-        step_comb_def.children.get(1).description = ";\n";
-        /*
-        if (step_comb_def.children.size() == 3) {
-            step_comb_def_transpile(
-                    (InternalNode) (step_comb_def.children.get(2)));
-        }*/
-
-    }
-
-    public void step_comb_variable_def_transpile(InternalNode variable) {
-
+        //build(editableTree);
+        program_transpile(editableTree);
     }
 
     private void create_always_comb(
             InternalNode sequence_def, InternalNode memory_ref,
             InternalNode output_ref, InternalNode sequence_ref) {
 
-        sequence_def.children.add(new Leaf("\nalways_comb begin \n", sequence_def));
+        sequence_def.children.add(new Leaf(add_tab(1) + "always_comb begin \n"));
         sequence_def.children.add(new Leaf(
-                "\t\tnext_state = state;\n",
-                sequence_def
+                add_tab(2) + "next_state = state;\n"
         ));
+
         for (InternalNode node : memory_ref.getAllDescendencyByDescription("variable_def")) {
             String var_name = node.children.get(0).description;
             sequence_def.children.add(new Leaf(
-                    "\t\tnext_" + var_name + " = " + var_name + ";\n",
-                    sequence_def
+                    add_tab(2) + "next_" + var_name + " = " + var_name + ";\n"
             ));
         }
 
@@ -508,8 +312,7 @@ public class TreeBuilder {
                 // variable
 
                 sequence_def.children.add(new Leaf(
-                        "\t\t" + var_name + " = 1'b0;\n",
-                        sequence_def
+                        add_tab(2) + var_name + " = 1'b0;\n"
                 ));
 
             } else if (node.children.size() == 4) {
@@ -519,60 +322,77 @@ public class TreeBuilder {
                     aux_str_binary += "0";
                 }
                 sequence_def.children.add(new Leaf(
-                        "\t\t" + var_name + " = " + size_array + "'b" + aux_str_binary + ";\n",
-                        sequence_def
+                        add_tab(2) + var_name + " = " + size_array + "'b" + aux_str_binary + ";\n"
                 ));
             }
         }
-        sequence_def.children.add(new Leaf("case(state)\n", sequence_def));
+        sequence_def.children.add(new Leaf(add_tab(2) + "case(state)\n"));
+        //
+        InternalNode steps_ref = (InternalNode) sequence_ref.getDescendencyByDescription("steps_def");
+        sequence_def.children.add(steps_ref);
 
-        InternalNode real_steps_ref = (InternalNode) sequence_ref.getDescendencyByDescription("steps_def").clone();
-
-        for (Node child : real_steps_ref.getAllDescendencyByDescription("assign_memory")) {
+        for (Node child : steps_ref.getAllDescendencyByDescription("assign_memory")) {
             Leaf memory_affected = (Leaf) ((InternalNode) child).children.get(0);
             memory_affected.description = "next_" + memory_affected.description;
 
         }
-
-        sequence_def.children.add(real_steps_ref);
-
-        real_steps_ref.description = "steps_on_always_def";
-
-        /* commented because of exists build*/
-        for (Node step_def_node : real_steps_ref.getAllDescendencyByDescription("step_def")) {
+        for (Node step_def_node : steps_ref.getAllDescendencyByDescription("step_def")) {
             InternalNode step_def = (InternalNode) step_def_node;
-            step_def.description = "step_comb_def";
-            step_comb_def_transpile(step_def);
+            InternalNode assign = (InternalNode) step_def.children.get(0);
 
+            assign.children.get(0).description = add_tab(4) + assign.children.get(0).description;
+            assign.children.get(1).description = "=";
+            step_def.children.get(1).description = ";\n";
+        }
+        //
 
-        }/**/
-        
-        
-        for (Node steps_def_node : sequence_ref.getAllDescendencyByDescription("steps_def")) {
+        for (Node steps_def_node : sequence_def.getAllDescendencyByDescription("steps_def")) {
             InternalNode steps_def = (InternalNode) steps_def_node;
-            for (Node step_transition_def
-                    : steps_def.getAllDescendencyByDescription("step_transition")) {
-                ArrayList<InternalNode> conditions = ((InternalNode) steps_def).getAllDescendencyByDescription("conditions");
-                ArrayList<InternalNode> goto_def = ((InternalNode) steps_def).getAllDescendencyByDescription("goto");
-                sequence_def.children.add(new Leaf("if (", steps_def));
-                sequence_def.children.add(conditions.get(0));
-                sequence_def.children.add(new Leaf(") next_state = S" + ((InternalNode) goto_def.get(0)).children.get(0).description + ";\n", steps_def));
 
-                for (int i = 1; i < conditions.size(); i++) {
-                    sequence_def.children.add(new Leaf("else if (", sequence_def));
-                    sequence_def.children.add(conditions.get(i));
-                    sequence_def.children.add(new Leaf(") next_state = S" + ((InternalNode) goto_def.get(i)).children.get(0).description + ";\n", sequence_def));
+            steps_def.children.get(1).description = add_tab(3) + "S";
+            steps_def.children.get(3).description = ":";
+            steps_def.children.get(4).description = " begin\n";
+            steps_def.children.get(7).description = add_tab(3) + "end\n";
+            steps_def.children.remove(0);
 
-                }
-                sequence_def.children.add(new Leaf("end\n", sequence_def));
+            InternalNode step_transition = (InternalNode) steps_def.getChildrenByDescription("step_transition");
+
+            ArrayList<InternalNode> conditions = step_transition.getAllDescendencyByDescription("conditions");
+            ArrayList<InternalNode> goto_def = step_transition.getAllDescendencyByDescription("goto");
+
+            // we have all info so i clear the step transition info
+            step_transition.children.clear();
+
+            step_transition.children.add(new Leaf(add_tab(4) + "if ("));
+
+            // TODO: make InternalNode an Iterator (hasNext(), next(), etc)
+            InternalNode condition_with_the_list_of_conditions = conditions.get(0).clone();
+            InternalNode condition_without_the_list_of_conditions = condition_with_the_list_of_conditions;
+
+            condition_without_the_list_of_conditions.removeChildrenByDescription("conditions");
+            condition_without_the_list_of_conditions.removeChildrenByDescription(",");
+
+            step_transition.children.add(condition_without_the_list_of_conditions);
+            step_transition.children.add(new Leaf(") next_state = S" + ((InternalNode) goto_def.get(0)).children.get(0).description + ";\n"));
+
+            for (int i = 1; i < conditions.size(); i++) {
+                step_transition.children.add(new Leaf(add_tab(4) + "else if ("));
+
+                condition_with_the_list_of_conditions = conditions.get(i).clone();
+                condition_without_the_list_of_conditions = condition_with_the_list_of_conditions;
+
+                condition_without_the_list_of_conditions.removeChildrenByDescription("conditions");
+                condition_without_the_list_of_conditions.removeChildrenByDescription(",");
+
+                step_transition.children.add(condition_without_the_list_of_conditions);
+                step_transition.children.add(new Leaf(") next_state = S" + ((InternalNode) goto_def.get(i)).children.get(0).description + ";\n"));
 
             }
+            step_transition.children.add(new Leaf(add_tab(4) + "end\n"));
 
         }
 
-        sequence_def.children.add(new Leaf("endcase;", sequence_def));
-        sequence_def.children.add(new Leaf("end;", sequence_def));
+        sequence_def.children.add(new Leaf(add_tab(2) + "endcase\n"));
     }
 
 }
-// 577

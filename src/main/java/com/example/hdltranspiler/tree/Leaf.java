@@ -10,19 +10,18 @@ package com.example.hdltranspiler.tree;
  */
 public class Leaf extends Node {
 
-    public Leaf(String description, InternalNode parent) {
+    public Leaf(String description) {
         this.description = description;
-        this.parent = parent;
     }
 
     @Override
     public Leaf clone() {
-        return new Leaf(description, parent);
+        return new Leaf(description);
     }
 
     @Override
     public Node clone_linked() {
-        return new LeafLinked(description, parent, this);
+        return new LeafLinked(description, this);
     }
     
     @Override
