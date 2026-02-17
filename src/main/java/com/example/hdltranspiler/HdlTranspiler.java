@@ -8,11 +8,14 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
+import org.antlr.v4.gui.TreeViewer;
+
 import com.example.hdltranspiler.HDLLexer;
 import com.example.hdltranspiler.HDLParser;
 import com.example.hdltranspiler.operations.TreeBuilder;
 import com.example.hdltranspiler.tree.InternalNode;
 import com.example.hdltranspiler.tree.CustomTreeEquivalent;
+import java.util.Arrays;
 
 /**
  *
@@ -27,7 +30,9 @@ public class HdlTranspiler {
     private static ParseTree tree;
 
     public static void main(String[] args) throws Exception {
-        String code = """
+        String code;
+        if (args.length == 0) {
+            code = """
                     MODULE: hello;
                     INPUT: touched, switch, buttons[3];
                     OUTPUT: red_led, turn_on,rgb[3];
@@ -44,22 +49,66 @@ public class HdlTranspiler {
                             red_led = !touched && switch || switch;
                             red_led = switch || touched;
                             mem_2 <= !turn_on;
-                            red_led= rbg && switch;
+                            red_led= rbg ||  switch;
                             mem_1<= buttons;
                         => ( switch ) / ( 2 );
                       
                         STEP(2):
+                            red_led = touched[0] || switch && !switch;
+                            red_led = touched;
+                            mem_2 <= GET(touched[0], touched[0]);
+                            red_led= rbg || switch;
+                            mem_1<= buttons;
+                        => ( switch ) / ( 0 );
+                                      
+                    END_SEQUENCE
+                    
+                    END_MODULE
+                   
+                   
+                    MODULE: hello;
+                    INPUT: touched, switch, buttons[3];
+                    OUTPUT: red_led, turn_on,rgb[3];
+                    MEMORY: mem_1[3], mem_2, mem_3;
+                    SEQUENCE(6):
+                        STEP(0):
                             red_led = !touched && switch || switch;
                             red_led = switch || touched;
                             mem_2 <= !turn_on;
                             red_led= rbg && switch;
                             mem_1<= buttons;
-                        => ( switch ) / ( 0 );
-                                      
-                    END_SEQUENCE;                 
-                      """;
-        System.out.print(transpile(code));
+                        => ( touched, !touched ) / ( 1 , 0 );
+                        STEP(1):
+                            red_led = !touched && switch || switch;
+                            red_led = switch || touched;
+                            mem_2 <= !turn_on;
+                            red_led= rbg ||  switch;
+                            mem_1<= buttons;
+                        => ( switch ) / ( 2 );
 
+                        STEP(2):
+                            red_led = touched[0] || switch && !switch;
+                            red_led = touched;
+                            mem_2 <= GET(touched[0], touched[0]);
+                            red_led= rbg || switch;
+                            mem_1<= buttons;
+                        => ( switch ) / ( 0 );
+
+                    END_SEQUENCE
+
+                    END_MODULE
+                    """;
+        } else {
+            code = args[0];
+        }
+        System.out.print(transpile(code));
+        visualize();
+
+    }
+
+    public static void visualize() {
+        var viewer = new TreeViewer(Arrays.asList(parser.getRuleNames()), tree);
+        viewer.open();
     }
 
     public static String transpile(String code) throws Exception {

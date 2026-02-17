@@ -5,9 +5,13 @@
 grammar HDL;
 
 program
-    : module_def ';' input_def
-        ';' output_def ';' memory_def ';' sequence_def ';' // 'endmodule' ';'
+    : module_def SEMI input_def SEMI output_def SEMI memory_def SEMI sequence_def END_MODULE program? EOF
     ;
+
+module
+    : 
+    ;
+
 module_def
     : MODULE DESCRIBE ID
     ;
@@ -20,7 +24,7 @@ variable_def
 input_def
     : INPUT DESCRIBE input_list
     ;
-// recursion order was inverted
+
 input_list
     : variable_def
     | ( variable_def COMMA
@@ -38,13 +42,13 @@ memory_def
 
 sequence_def
     : SEQUENCE LPAREN NUMBER RPAREN DESCRIBE steps_def END_SEQUENCE
-//    | SEQUENCE DESCRIBE END_SEQUENCE si quiero agregarlo, modificar codigo
+//    | SEQUENCE DESCRIBE END_SEQUENCE
     ;
 
-// IMPORTANT CHANGES HERE
+
 steps_def
-    : (STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition ';' )
-    | (STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition ';' steps_def)
+    : (STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition SEMI )
+    | (STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition SEMI steps_def)
     ;
 
 step_transition
@@ -52,12 +56,13 @@ step_transition
     ;
 
 step_def
-    : (( assign_memory | assign_output ) ';') 
-    | (( assign_memory | assign_output ) ';' step_def) 
+    : (( assign_memory | assign_output ) SEMI) 
+    | (( assign_memory | assign_output ) SEMI step_def) 
     ; 
 
 
-assign_output: ID EQ expr
+assign_output
+    : ID EQ expr
     ;
 
 assign_memory
@@ -73,18 +78,16 @@ goto
     | (NUMBER COMMA goto)
     ;
 
-expr: 
-//  | bit
+expr
+    : input_list
     | variable_def
+    | module_call
     | (NOT expr)
-    | (variable_def AND expr)
     | (variable_def OR expr)
+    | (variable_def AND expr)
     ;
-/*
-bit
-    : '0'
-    | '1'
-    ;*/
+
+module_call : ID LPAREN input_list RPAREN;
 
 // lexer grammar ExprLexer;
 // uncomment on testing on a website, maybe it can be in diff files
@@ -97,6 +100,7 @@ TRANSITION_TO : '/';
 DOT : '.';
 SEQUENCE : 'SEQUENCE';
 END_SEQUENCE : 'END_SEQUENCE';
+END_MODULE : 'END_MODULE';
 MODULE : 'MODULE';
 INPUT : 'INPUT';
 OUTPUT : 'OUTPUT';

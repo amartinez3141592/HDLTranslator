@@ -9,7 +9,6 @@ import com.example.hdltranspiler.tree.InternalNodeLinked;
 import com.example.hdltranspiler.tree.Leaf;
 import com.example.hdltranspiler.tree.Node;
 import java.util.ArrayList;
-import java.util.function.Consumer;
 
 /**
  *
@@ -17,11 +16,9 @@ import java.util.function.Consumer;
  */
 public class TreeBuilder {
 
-    private final InternalNode referenceTree;
     private final InternalNodeLinked editableTree;
 
     public TreeBuilder(InternalNode referenceTree) {
-        this.referenceTree = referenceTree;
         this.editableTree = referenceTree.clone_linked();
     }
 
@@ -46,7 +43,7 @@ public class TreeBuilder {
         module_def.children.remove(1);
         module_def.children.add(1, new Leaf(" "));
     }
-
+    
     public void program_transpile(InternalNode program_def) {
         // delete first ; and put (
         program_def.children.get(1).description = "(\n";
@@ -73,7 +70,15 @@ public class TreeBuilder {
                 (InternalNodeLinked) program_def.getChildrenByDescription("memory_def"),
                 output_def.reference_tree.clone());
 
-        program_def.children.get(9).description = "endmodule";
+        program_def.children.get(9).description = "endmodule\n";
+        
+        if (program_def.children.size() == 12) {
+            var next_program_def = (InternalNode) program_def.children.get(10);
+            if (next_program_def.children.size() != 0) {
+                program_transpile(next_program_def);
+            }
+            
+        }
     }
 
     public void input_def_transpile(
