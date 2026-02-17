@@ -97,11 +97,17 @@ public class HdlTranspiler {
 
                     END_MODULE
                     """;
+            System.out.print(transpile(code));
+
         } else {
             code = args[0];
+            System.out.print(transpile(code));
+            // visualize();
+            if (args.length == 2) {
+                System.out.println(tree.toStringTree(parser));
+            }
         }
-        System.out.print(transpile(code));
-        // visualize();
+
 
     }
 
@@ -120,7 +126,6 @@ public class HdlTranspiler {
 
         tree = parser.program();
 
-        System.out.println(tree.toStringTree(parser));
 
         InternalNode editableTree = CustomTreeEquivalent.parse(tree, parser);
 

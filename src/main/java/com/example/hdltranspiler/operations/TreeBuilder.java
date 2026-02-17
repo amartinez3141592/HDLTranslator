@@ -40,10 +40,11 @@ public class TreeBuilder {
     }
 
     public void module_def_transpile(InternalNode module_def) {
+        module_def.children.get(0).description = "module";
         module_def.children.remove(1);
         module_def.children.add(1, new Leaf(" "));
     }
-    
+
     public void program_transpile(InternalNode program_def) {
         // delete first ; and put (
         program_def.children.get(1).description = "(\n";
@@ -71,13 +72,13 @@ public class TreeBuilder {
                 output_def.reference_tree.clone());
 
         program_def.children.get(9).description = "endmodule\n";
-        
+
         if (program_def.children.size() == 12) {
             var next_program_def = (InternalNode) program_def.children.get(10);
             if (next_program_def.children.size() != 0) {
                 program_transpile(next_program_def);
             }
-            
+
         }
     }
 
@@ -339,7 +340,7 @@ public class TreeBuilder {
             InternalNode step_def = (InternalNode) step_def_node;
             InternalNode assign = (InternalNode) step_def.children.get(0);
             assign.children.get(0).description = add_tab(4) + assign.children.get(0).description;
-            
+
             // if it is conditionated assign to memory
             if (assign.description.equals("assign_memory") && assign.children.size() == 5) {
                 Node condition = assign.children.get(2);
@@ -348,16 +349,16 @@ public class TreeBuilder {
                 assign.children.remove(1);
                 assign.children.get(0).description = add_tab(1) + assign.children.get(0).description;
 
-                step_def.children.add(2, new Leaf("\n"+add_tab(4) + "end\n"));
+                step_def.children.add(2, new Leaf("\n" + add_tab(4) + "end\n"));
                 step_def.children.addFirst(new Leaf(")\n"));
-                step_def.children.addFirst( condition);
-            
+                step_def.children.addFirst(condition);
+
                 step_def.children.addFirst(new Leaf(add_tab(4) + "if("));
             }
-            
+
             assign.children.get(1).description = "=";
             step_def.children.get(1).description = ";\n";
-            
+
         }
         //
 

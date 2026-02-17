@@ -62,10 +62,12 @@ public class CustomTreeEquivalent {
             // (e.g., an identifier, keyword, or literal)
             TerminalNode terminalNode = (TerminalNode) node;
 
-            // System.out.println("Token: " + terminalNode.getSymbol().getText());
-            parent.children.add(
-                    new Leaf(terminalNode.getSymbol().getText())
-            );
+            if (!terminalNode.getSymbol().getText().equals("<EOF>")) {
+                // System.out.println("Token: " + terminalNode.getSymbol().getText());
+                parent.children.add(
+                        new Leaf(terminalNode.getSymbol().getText())
+                );
+            }
 
         } else if (node instanceof ParserRuleContext) {
             // It is an internal node, representing a rule invocation
@@ -79,15 +81,15 @@ public class CustomTreeEquivalent {
             String nodeDescription = rule_names[idx];
 
             parent.children.addLast(
-                new InternalNode(nodeDescription)
+                    new InternalNode(nodeDescription)
             );
-            
+
             if (ruleContext.children != null) {
                 for (ParseTree child : ruleContext.children) {
                     parse((InternalNode) parent.children.getLast(), child, parser);
                 }
             }
-        
+
         } else if (node instanceof ErrorNode) {
             // It is an error node
             ErrorNode errorNode = (ErrorNode) node;
