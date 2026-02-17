@@ -3,7 +3,7 @@
 // options { tokenVocab=ExprLexer; }
 // uncomment if the gramar is in another file, common in website test 
 grammar HDL;
-
+// TODO: test usign ? in recursion and see if performance improves
 program
     : module_def SEMI input_def SEMI output_def SEMI memory_def SEMI sequence_def END_MODULE program? EOF
     ;
@@ -17,8 +17,7 @@ module_def
     ;
 
 variable_def
-    : (ID SELECTOR NUMBER END_SELECTOR)
-    | ID
+    : | ID (SELECTOR NUMBER END_SELECTOR) ?
     ;
     
 input_def
@@ -26,10 +25,7 @@ input_def
     ;
 
 input_list
-    : variable_def
-    | ( variable_def COMMA
-        input_list
-    )
+    : variable_def (COMMA input_list ) ?
     ;
  
 output_def
@@ -47,8 +43,7 @@ sequence_def
 
 
 steps_def
-    : (STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition SEMI )
-    | (STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition SEMI steps_def)
+    : STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition SEMI steps_def?
     ;
 
 step_transition
@@ -56,8 +51,7 @@ step_transition
     ;
 
 step_def
-    : (( assign_memory | assign_output ) SEMI) 
-    | (( assign_memory | assign_output ) SEMI step_def) 
+    : ( assign_memory | assign_output ) SEMI step_def?
     ; 
 
 
@@ -66,16 +60,14 @@ assign_output
     ;
 
 assign_memory
-    : ID MEM_ASSIGN expr
+    : ID (CONDITIONED_BY expr)? MEM_ASSIGN expr
     ;
 
 conditions
-    : expr
-    | (expr COMMA conditions)
+    : expr (COMMA conditions) ?
     ;
 goto
-    : NUMBER
-    | (NUMBER COMMA goto)
+    : NUMBER (COMMA goto) ?
     ;
 
 expr
@@ -92,7 +84,7 @@ module_call : ID LPAREN input_list RPAREN;
 // lexer grammar ExprLexer;
 // uncomment on testing on a website, maybe it can be in diff files
 
-
+CONDITIONED_BY: '*';
 NUMBER : [0-9]+ ;
 MEM_ASSIGN : '<=';
 TRANSITION : '=>';

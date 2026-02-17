@@ -85,14 +85,13 @@ public class TreeBuilder {
             InternalNode input_def,
             String tag_of_elements,
             String input_divider) {
-        //if (((Leaf) node.children.get(1)).description.equals(":")) {
+
         input_def.children.remove(1);
         input_def.children.add(1, new Leaf(" "));
 
         input_def.children.get(0).description = tag_of_elements;
-        // first input_def 
         input_def_transpile(input_def, ((InternalNode) input_def.children.get(2)), tag_of_elements, input_divider);
-        //}
+
     }
 
     public void input_def_transpile(
@@ -125,10 +124,6 @@ public class TreeBuilder {
 
         input_def.children.add(new Leaf(tag_of_elements));
         input_def.children.add(new Leaf(" "));
-        //InternalNode in = new InternalNode("input_list");
-        //input_def_node.children.add(in);
-
-        //in.children.add(variable_def);
         input_def.children.add(list_def);
 
         InternalNode variable_def = (InternalNode) list_def.getDescendencyByDescription("variable_def");
@@ -290,7 +285,6 @@ public class TreeBuilder {
     }
 
     public void build() {
-        //build(editableTree);
         program_transpile(editableTree);
     }
 
@@ -344,10 +338,26 @@ public class TreeBuilder {
         for (Node step_def_node : steps_ref.getAllDescendencyByDescription("step_def")) {
             InternalNode step_def = (InternalNode) step_def_node;
             InternalNode assign = (InternalNode) step_def.children.get(0);
-
             assign.children.get(0).description = add_tab(4) + assign.children.get(0).description;
+            
+            // if it is conditionated assign to memory
+            if (assign.description.equals("assign_memory") && assign.children.size() == 5) {
+                Node condition = assign.children.get(2);
+                // remove conditional specific syntax
+                assign.children.remove(2);
+                assign.children.remove(1);
+                assign.children.get(0).description = add_tab(1) + assign.children.get(0).description;
+
+                step_def.children.add(2, new Leaf("\n"+add_tab(4) + "end\n"));
+                step_def.children.addFirst(new Leaf(")\n"));
+                step_def.children.addFirst( condition);
+            
+                step_def.children.addFirst(new Leaf(add_tab(4) + "if("));
+            }
+            
             assign.children.get(1).description = "=";
             step_def.children.get(1).description = ";\n";
+            
         }
         //
 

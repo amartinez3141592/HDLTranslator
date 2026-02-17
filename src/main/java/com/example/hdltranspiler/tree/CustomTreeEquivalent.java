@@ -5,8 +5,6 @@
 package com.example.hdltranspiler.tree;
 
 import com.example.hdltranspiler.HDLParser;
-import java.util.Optional;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;

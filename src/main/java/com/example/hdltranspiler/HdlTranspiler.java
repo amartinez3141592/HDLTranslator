@@ -56,7 +56,6 @@ public class HdlTranspiler {
                         STEP(2):
                             red_led = touched[0] || switch && !switch;
                             red_led = touched;
-                            mem_2 <= GET(touched[0], touched[0]);
                             red_led= rbg || switch;
                             mem_1<= buttons;
                         => ( switch ) / ( 0 );
@@ -65,7 +64,7 @@ public class HdlTranspiler {
                     
                     END_MODULE
                    
-                   
+
                     MODULE: hello;
                     INPUT: touched, switch, buttons[3];
                     OUTPUT: red_led, turn_on,rgb[3];
@@ -89,7 +88,7 @@ public class HdlTranspiler {
                         STEP(2):
                             red_led = touched[0] || switch && !switch;
                             red_led = touched;
-                            mem_2 <= GET(touched[0], touched[0]);
+                            mem_2 * touched[0] && fff <= GET(touched[0], touched[0]);
                             red_led= rbg || switch;
                             mem_1<= buttons;
                         => ( switch ) / ( 0 );
@@ -102,7 +101,7 @@ public class HdlTranspiler {
             code = args[0];
         }
         System.out.print(transpile(code));
-        visualize();
+        // visualize();
 
     }
 
