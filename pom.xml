@@ -46,7 +46,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
-                     <compilerArgs>
+                    <compilerArgs>
                         <arg>--enable-preview</arg>
                     </compilerArgs>
                 </configuration>
@@ -69,7 +69,24 @@
         
     </build>
     <dependencies>
-     
+        <!-- Source: https://mvnrepository.com/artifact/com.formdev/flatlaf -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.6.1</version>
+
+            
+        </dependency>
+               
+        <!-- Source: https://mvnrepository.com/artifact/com.formdev/flatlaf-extras -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>3.6.1</version>
+
+        </dependency>
+        
+
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4</artifactId>
@@ -87,7 +104,12 @@
             <artifactId>jna</artifactId>
             <version>5.17.0</version>
         </dependency>
-    
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.28</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

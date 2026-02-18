@@ -49,9 +49,8 @@ public class TreeBuilder {
         // delete first ; and put (
         program_def.children.get(1).description = "(\n";
         program_def.children.get(3).description = ",\n";
-
-        program_def.getChildrenByDescription(";").description = ",\n";
-        program_def.getChildrenByDescription(";").description = ",\n";
+        program_def.children.get(5).description = ";\n";
+        program_def.children.get(7).description = ";\n";
 
         InternalNodeLinked input_def = (InternalNodeLinked) program_def.getChildrenByDescription("input_def");
         input_def_transpile(input_def, add_tab(1) + "input logic", ",\n");
@@ -170,13 +169,17 @@ public class TreeBuilder {
         str_binary = "1" + str_binary;
 
         // 10000000 size n_steps
-        for (int i = 0; i < n_steps; i++) {
+        for (int i = 0; i < n_steps - 1; i++) {
             type_def_state.children.add(new Leaf(
                     add_tab(2) + "S" + i + " = " + n_steps + "'b" + str_binary + ",\n"
             ));
             str_binary = "0" + str_binary.substring(0, n_steps - 1);
         }
 
+        type_def_state.children.add(new Leaf(
+                add_tab(2) + "S" + (n_steps -1) + " = " + n_steps + "'b" + str_binary + "\n"
+        ));
+        
         type_def_state.children.add(new Leaf(
                 add_tab(1) + "} state_t;\n"
         ));
@@ -389,10 +392,10 @@ public class TreeBuilder {
             condition_without_the_list_of_conditions.removeChildrenByDescription(",");
 
             step_transition.children.add(condition_without_the_list_of_conditions);
-            step_transition.children.add(new Leaf(") next_state = S" + ((InternalNode) goto_def.get(0)).children.get(0).description + ";\n"));
+            step_transition.children.add(new Leaf(") begin next_state = S" + ((InternalNode) goto_def.get(0)).children.get(0).description + ";\n"));
 
             for (int i = 1; i < conditions.size(); i++) {
-                step_transition.children.add(new Leaf(add_tab(4) + "else if ("));
+                step_transition.children.add(new Leaf(add_tab(4) + "end else if ("));
 
                 condition_with_the_list_of_conditions = conditions.get(i).clone();
                 condition_without_the_list_of_conditions = condition_with_the_list_of_conditions;
@@ -401,7 +404,7 @@ public class TreeBuilder {
                 condition_without_the_list_of_conditions.removeChildrenByDescription(",");
 
                 step_transition.children.add(condition_without_the_list_of_conditions);
-                step_transition.children.add(new Leaf(") next_state = S" + ((InternalNode) goto_def.get(i)).children.get(0).description + ";\n"));
+                step_transition.children.add(new Leaf(") begin next_state = S" + ((InternalNode) goto_def.get(i)).children.get(0).description + ";\n"));
 
             }
             step_transition.children.add(new Leaf(add_tab(4) + "end\n"));

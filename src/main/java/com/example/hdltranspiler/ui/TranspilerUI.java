@@ -4,12 +4,26 @@
  */
 package com.example.hdltranspiler.ui;
 
+import com.example.hdltranspiler.HdlTranspiler;
+import java.awt.Image;
+
+import java.io.File;
+import java.io.IOException;
+
+import java.nio.file.Files;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+
 /**
  *
  * @author Alexis Martinez
  */
 public class TranspilerUI extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form TranspilerUI
      */
@@ -26,23 +40,23 @@ public class TranspilerUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea2 = new javax.swing.JTextArea();
-        jSplitPane2 = new javax.swing.JSplitPane();
+        file_chooser = new javax.swing.JFileChooser();
+        pnlGridMain1 = new com.example.hdltranspiler.ui.PnlGridMain();
         javax.swing.JButton btn_convert = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
+        menu_bar = new javax.swing.JMenuBar();
+        menu_file = new javax.swing.JMenu();
+        menu_open_HDL_file = new javax.swing.JMenuItem();
+        menu_edit = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        getContentPane().setLayout(new java.awt.GridLayout(1, 2));
+        setTitle("Hdl to System Verilog transpiler");
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setIconImage((new FlatSVGIcon("svg/icon.svg")).getImage());
+        setMinimumSize(new java.awt.Dimension(600, 600));
 
-        jTextArea2.setColumns(20);
-        jTextArea2.setRows(5);
-        jScrollPane2.setViewportView(jTextArea2);
-
-        getContentPane().add(jScrollPane2);
-
-        jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+        pnlGridMain1.setMinimumSize(new java.awt.Dimension(300, 72));
+        pnlGridMain1.setPreferredSize(new java.awt.Dimension(800, 400));
+        getContentPane().add(pnlGridMain1, java.awt.BorderLayout.CENTER);
 
         btn_convert.setText("Convert to SystemVerilog");
         btn_convert.addActionListener(new java.awt.event.ActionListener() {
@@ -50,22 +64,62 @@ public class TranspilerUI extends javax.swing.JFrame {
                 btn_convertActionPerformed(evt);
             }
         });
-        jSplitPane2.setTopComponent(btn_convert);
+        getContentPane().add(btn_convert, java.awt.BorderLayout.PAGE_END);
 
-        jTextPane1.setEditable(false);
-        jTextPane1.setText("The output cannot be editable");
-        jScrollPane1.setViewportView(jTextPane1);
+        menu_file.setText("File");
 
-        jSplitPane2.setRightComponent(jScrollPane1);
+        menu_open_HDL_file.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menu_open_HDL_file.setText("New .Hdl file");
+        menu_open_HDL_file.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_open_HDL_fileActionPerformed(evt);
+            }
+        });
+        menu_file.add(menu_open_HDL_file);
 
-        getContentPane().add(jSplitPane2);
+        menu_bar.add(menu_file);
+
+        menu_edit.setText("Edit");
+        menu_bar.add(menu_edit);
+
+        setJMenuBar(menu_bar);
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_convertActionPerformed
-        System.out.println("hello");
+        try {
+            String input = this.pnlGridMain1.pnl_RTL_input1.input_rtl.getText();
+            String transpile_out = HdlTranspiler.transpile(input);
+            this.pnlGridMain1.pnl_system_verilog_output.txt_area_output_system_verilog.setText(transpile_out);
+            this.pnlGridMain1.pnl_output_console.txt_area_output.setText(HdlTranspiler.toStringTreeForLookingForSyntaxErrors());
+
+        } catch (Exception ex) {
+            Logger.getLogger(TranspilerUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btn_convertActionPerformed
+
+    private void menu_open_HDL_fileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_open_HDL_fileActionPerformed
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                "HDL", "hdl");
+        file_chooser.setFileFilter(filter);
+        int returnVal = file_chooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = file_chooser.getSelectedFile();
+
+            try {
+
+                String content = Files.readString(file.toPath());
+                this.pnlGridMain1.pnl_RTL_input1.input_rtl.setText(content);
+                this.pnlGridMain1.pnl_RTL_input1.input_rtl.setText(content);
+
+            } catch (IOException ex) {
+                Logger.getLogger(TranspilerUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }//GEN-LAST:event_menu_open_HDL_fileActionPerformed
 
     /**
      * @param args the command line arguments
@@ -103,10 +157,11 @@ public class TranspilerUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JSplitPane jSplitPane2;
-    private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextPane jTextPane1;
+    private javax.swing.JFileChooser file_chooser;
+    private javax.swing.JMenuBar menu_bar;
+    private javax.swing.JMenu menu_edit;
+    private javax.swing.JMenu menu_file;
+    private javax.swing.JMenuItem menu_open_HDL_file;
+    private com.example.hdltranspiler.ui.PnlGridMain pnlGridMain1;
     // End of variables declaration//GEN-END:variables
 }

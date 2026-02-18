@@ -56,11 +56,11 @@ step_def
 
 
 assign_output
-    : ID EQ expr
+    : ID EQ (expr | input_list)
     ;
 
 assign_memory
-    : ID (CONDITIONED_BY expr)? MEM_ASSIGN expr
+    : ID (CONDITIONED_BY expr)? MEM_ASSIGN (expr | input_list)
     ;
 
 conditions
@@ -71,8 +71,8 @@ goto
     ;
 
 expr
-    : input_list
-    | variable_def
+    :
+    variable_def
     | module_call
     | (NOT expr)
     | (variable_def OR expr)
