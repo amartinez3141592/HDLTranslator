@@ -108,7 +108,6 @@ public class HdlTranspiler {
             }
         }
 
-
     }
 
     public static void visualize() {
@@ -125,7 +124,6 @@ public class HdlTranspiler {
         parser = new HDLParser(tokens);
 
         tree = parser.program();
-
 
         InternalNode editableTree = CustomTreeEquivalent.parse(tree, parser);
 

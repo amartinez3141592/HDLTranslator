@@ -10,7 +10,7 @@ import java.awt.datatransfer.StringSelection;
  */
 /**
  *
- * @author u0_a525
+ * @author Alexis Martinez
  */
 public class PnlSystemVerilogOutput extends javax.swing.JPanel {
 

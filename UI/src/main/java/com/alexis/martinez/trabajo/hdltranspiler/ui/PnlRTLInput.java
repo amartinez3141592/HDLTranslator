@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author u0_a525
+ * @author Alexis Martinez
  */
 public class PnlRTLInput extends javax.swing.JPanel {
 

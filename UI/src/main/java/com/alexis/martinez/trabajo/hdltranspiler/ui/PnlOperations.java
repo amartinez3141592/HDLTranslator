@@ -8,7 +8,7 @@ import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HdlTranspiler;
 
 /**
  *
- * @author u0_a525
+ * @author Alexis Martinez
  */
 public class PnlOperations extends javax.swing.JPanel {
 

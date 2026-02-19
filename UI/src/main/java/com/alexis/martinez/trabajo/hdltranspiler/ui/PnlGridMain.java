@@ -6,7 +6,7 @@ package com.alexis.martinez.trabajo.hdltranspiler.ui;
 
 /**
  *
- * @author u0_a525
+ * @author Alexis Martinez
  */
 public class PnlGridMain extends javax.swing.JPanel {
 
