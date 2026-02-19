@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.alexis.martinez.trabajo</groupId>
+        <artifactId>HDLTranspiler</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>UI</artifactId>
+    <packaging>jar</packaging>
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <exec.mainClass>com.alexis.martinez.trabajo.hdltranspiler.ui.TranspilerUI</exec.mainClass>
+    </properties>
+    <dependencies>
+        <!-- Source: https://mvnrepository.com/artifact/com.formdev/flatlaf -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf</artifactId>
+            <version>3.6.1</version>
+
+            
+        </dependency>
+               
+        <!-- Source: https://mvnrepository.com/artifact/com.formdev/flatlaf-extras -->
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>3.6.1</version>
+
+        </dependency>
+        <!-- 
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.17.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>4.0.28</version>
+            <type>jar</type>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>com.alexis.martinez.trabajo</groupId>
+            <artifactId>SharedLibrary</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+</project>
