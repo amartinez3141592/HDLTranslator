@@ -8,16 +8,18 @@ program
     : module_def SEMI input_def SEMI output_def SEMI memory_def SEMI sequence_def END_MODULE program? EOF
     ;
 
+/*
 module
     : 
     ;
+*/
 
 module_def
     : MODULE DESCRIBE ID
     ;
 
 variable_def
-    : | ID (SELECTOR NUMBER END_SELECTOR) ?
+    : ID (SELECTOR NUMBER END_SELECTOR) ?
     ;
     
 input_def
@@ -38,16 +40,16 @@ memory_def
 
 sequence_def
     : SEQUENCE LPAREN NUMBER RPAREN DESCRIBE steps_def END_SEQUENCE
-//    | SEQUENCE DESCRIBE END_SEQUENCE
+    //    | SEQUENCE DESCRIBE END_SEQUENCE
     ;
 
 
 steps_def
-    : STEP LPAREN NUMBER RPAREN DESCRIBE step_def step_transition SEMI steps_def?
+    : STEP LPAREN NUMBER RPAREN DESCRIBE step_def? step_transition SEMI steps_def?
     ;
 
 step_transition
-    : TRANSITION LPAREN conditions RPAREN TRANSITION_TO LPAREN goto RPAREN   
+    : TRANSITION LPAREN conditions RPAREN TRANSITION_TO LPAREN goto RPAREN 
     ;
 
 step_def
@@ -56,11 +58,16 @@ step_def
 
 
 assign_output
-    : ID EQ (expr | input_list)
+    : ID EQ ( expr |
+            assignation_input_list )
+    ;
+
+assignation_input_list
+    : LCURLY input_list RCURLY
     ;
 
 assign_memory
-    : ID (CONDITIONED_BY expr)? MEM_ASSIGN (expr | input_list)
+    : ID (CONDITIONED_BY expr)? MEM_ASSIGN (expr | assignation_input_list)
     ;
 
 conditions
@@ -71,18 +78,29 @@ goto
     ;
 
 expr
-    :
-    variable_def
+    : const_expr
+    | variable_def
     | module_call
     | (NOT expr)
     | (variable_def OR expr)
     | (variable_def AND expr)
     ;
 
-module_call : ID LPAREN input_list RPAREN;
+
+// 2'b01 or 3'hAF
+const_expr
+    : NUMBER
+    CONST_DEF_SIGN
+    ID
+    ;
+
+call_input_list : expr (COMMA call_input_list ) ?;
+
+module_call : ID LPAREN call_input_list RPAREN;
 
 // lexer grammar ExprLexer;
 // uncomment on testing on a website, maybe it can be in diff files
+CONST_DEF_SIGN : '\'';
 
 CONDITIONED_BY: '*';
 NUMBER : [0-9]+ ;

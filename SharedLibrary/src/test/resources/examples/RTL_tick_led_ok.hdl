@@ -6,8 +6,8 @@ MEMORY: isActivated;
 		STEP(0):
 		    red_led = VCC;
 		=> ( VCC ) / ( 1 );
-		
-                STEP(1):
+
+		STEP(1):
 		    red_led = GND;
 		=> ( VCC ) / ( 0 );
 	END_SEQUENCE

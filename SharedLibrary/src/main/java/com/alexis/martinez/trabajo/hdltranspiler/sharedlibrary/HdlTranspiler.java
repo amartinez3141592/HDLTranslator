@@ -12,7 +12,7 @@ import org.antlr.v4.gui.TreeViewer;
 
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HDLLexer;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HDLParser;
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.operations.TreeBuilder;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.operations.TreeExport;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.tree.InternalNode;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.tree.CustomTreeEquivalent;
 import java.util.Arrays;
@@ -110,11 +110,26 @@ public class HdlTranspiler {
 
     }
 
+    /**
+     * This method return a gui tree viewer that shows the abstract syntax tree
+     * See also: TreeViewer
+     */
     public static void visualize() {
         var viewer = new TreeViewer(Arrays.asList(parser.getRuleNames()), tree);
         viewer.open();
     }
 
+    /**
+     * This method recieves the hdl informal code and process it,
+     * throws an Exception if there is an error and call TreeExport.build() to transpile it
+     * @see com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.operations.TreeExport#build() 
+     * @see com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HDLLexer
+     * @see com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HDLParser
+
+     * @param code
+     * @return the transpiled System Verilog output
+     * @throws Exception
+     */
     public static String transpile(String code) throws Exception {
 
         input = CharStreams.fromString(code);
@@ -127,12 +142,16 @@ public class HdlTranspiler {
 
         InternalNode editableTree = CustomTreeEquivalent.parse(tree, parser);
 
-        TreeBuilder translated_tree = new TreeBuilder(editableTree);
+        TreeExport translated_tree = new TreeExport(editableTree);
         translated_tree.build();
 
         return translated_tree.toString();
     }
 
+    /**
+     *
+     * @return the Tree in string format
+     */
     public static String toStringTreeForLookingForSyntaxErrors() {
         return tree.toStringTree(parser);
     }
