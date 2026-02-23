@@ -1,0 +1,22 @@
+MODULE: parallel_to_serial;
+INPUT: parallel[3], VCC, GND, clk, reset;
+OUTPUT: serial;
+MEMORY: aux[3];
+	SEQUENCE(3):
+		STEP(0):
+		    aux <= {parallel[2],parallel[1],parallel[0]};
+                    serial = aux[0];
+                => ( VCC ) / ( 1 );
+
+		STEP(1):
+                    aux <= {parallel[0],parallel[2],parallel[1]};
+                    serial = aux[0];		
+                => ( VCC ) / ( 2 );
+
+		STEP(2):
+		    aux <= {parallel[1],parallel[0],parallel[2]};
+                    serial = aux[0];                    
+		=> ( VCC ) / ( 0 );
+
+	END_SEQUENCE
+END_MODULE

@@ -1,11 +1,11 @@
-MODULE: tick_light;
+MODULE: tick_light_bad;
 INPUT: btn_activate, VCC, GND, clk, reset;
 OUTPUT: red_led;
 MEMORY: isActivated;
 	SEQUENCE(2):
 		STEP(0):
 		    red_led = VCC;
-		=> ( VCC ) / ( 1 );
+                =>  VCC ) / ( 1 );
 		
                 STEP(1):
 		    red_led = GND;

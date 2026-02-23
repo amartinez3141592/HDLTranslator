@@ -24,7 +24,7 @@ import com.formdev.flatlaf.extras.FlatSVGIcon;
  * @author Alexis Martinez
  */
 public class TranspilerUI extends javax.swing.JFrame {
-    
+
     /**
      * Creates new form TranspilerUI
      */
@@ -90,20 +90,25 @@ public class TranspilerUI extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_convertActionPerformed
+
+        this.pnlGridMain1.pnl_output_console.txt_area_output.setText("");
+        this.pnlGridMain1.pnl_system_verilog_output.txt_area_output_system_verilog.setText("");
         try {
             String input = this.pnlGridMain1.pnl_RTL_input1.input_rtl.getText();
             String transpile_out = HdlTranspiler.transpile(input);
             this.pnlGridMain1.pnl_system_verilog_output.txt_area_output_system_verilog.setText(transpile_out);
-            this.pnlGridMain1.pnl_output_console.txt_area_output.setText(HdlTranspiler.toStringTreeForLookingForSyntaxErrors());
-
         } catch (Exception ex) {
             Logger.getLogger(TranspilerUI.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.pnlGridMain1.pnl_output_console.txt_area_output.setText(HdlTranspiler.toStringTreeForLookingForSyntaxErrors());
+
+
     }//GEN-LAST:event_btn_convertActionPerformed
 
     private void menu_open_HDL_fileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_open_HDL_fileActionPerformed
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "HDL", "hdl");
+
         file_chooser.setFileFilter(filter);
         int returnVal = file_chooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {

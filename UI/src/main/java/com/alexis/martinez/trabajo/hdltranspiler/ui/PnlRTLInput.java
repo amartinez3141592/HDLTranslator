@@ -4,12 +4,15 @@
  */
 package com.alexis.martinez.trabajo.hdltranspiler.ui;
 
+ import com.alexis.martinez.trabajo.hdltranspiler.ui.control.ExampleGenerator;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JScrollBar;
 
 /**
  *
@@ -63,20 +66,13 @@ public class PnlRTLInput extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_exampleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_exampleActionPerformed
+        this.input_rtl.setText(ex_gen.getContent());
+        this.input_rtl.setCaretPosition(0);
 
-        InputStream is = getClass().getResourceAsStream("/examples/RTL_tick_led.hdl");
-        try {
-            String example_content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
-
-            this.input_rtl.setText(example_content);
-
-        } catch (IOException ex) {
-            Logger.getLogger(PnlRTLInput.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-
+        ex_gen.next();
     }//GEN-LAST:event_btn_exampleActionPerformed
 
+    private final ExampleGenerator ex_gen = new ExampleGenerator();
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_example;

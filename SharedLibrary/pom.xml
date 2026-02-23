@@ -4,12 +4,13 @@
     <parent>
         <groupId>com.alexis.martinez.trabajo</groupId>
         <artifactId>HDLTranspiler</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
     <groupId>com.alexis.martinez.trabajo</groupId>
     <artifactId>SharedLibrary</artifactId>
     <packaging>jar</packaging>
     <properties>
+        <doclint>none</doclint> <!-- delete this if docs are completed -->
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <exec.mainClass>com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HdlTranspiler</exec.mainClass>
@@ -17,7 +18,8 @@
     
     <build>
         <plugins>
-     <plugin>
+            <plugin>
+                <!-- it is for generate an executable jar via java -jar ... -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.6.1</version>
@@ -37,8 +39,8 @@
                     </execution>
                 </executions>
             </plugin>
-             
             <plugin>
+                <!-- it is for generate antlr classes -->
                 <groupId>org.antlr</groupId>
                 <artifactId>antlr4-maven-plugin</artifactId>
                 <version>4.13.2</version>
@@ -49,6 +51,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
             </plugin>
         </plugins>
     
@@ -78,6 +85,31 @@
             <artifactId>antlr4-maven-plugin</artifactId>
             <version>4.13.2</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.6.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- compare output of system verilog and get diff with the reference -->
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.14.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
