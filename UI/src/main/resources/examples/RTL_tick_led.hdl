@@ -10,6 +10,7 @@ OUTPUT: red_led;
                 STEP(1):
 		    red_led = GND;
 		=> ( VCC ) / ( 0 );
+
 	END_SEQUENCE;
 	CONTROL RESET (0):
 

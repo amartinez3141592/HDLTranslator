@@ -170,7 +170,7 @@ public class TranspilerTest {
             Assertions.assertTrue(false, "Exception thrown");
         }
     }
-    
+
     @Test
     public void test_RTL_empty_sequence() {
         try {
@@ -188,6 +188,30 @@ public class TranspilerTest {
             Logger.getLogger(TranspilerTest.class.getName()).log(Level.SEVERE, diff);
 
             Assertions.assertTrue(system_verilog_code.equals(ex_gen.getContentByFilename("RTL_empty_sequence_and_control.sv")));
+
+        } catch (Exception ex) {
+            Logger.getLogger(TranspilerTest.class.getName()).log(Level.SEVERE, null, ex);
+            Assertions.assertTrue(false, "Exception thrown");
+        }
+    }
+
+    @Test
+    public void test_RTL_X() {
+        try {
+            String system_verilog_code = HdlTranspiler.transpile(
+                    ex_gen.getContentByFilename("RTL_X.hdl")
+            );
+            String out = HdlTranspiler.toStringTreeForLookingForSyntaxErrors();
+
+            Assertions.assertTrue(!out.contains("missing"));
+
+            String diff = StringUtils.difference(
+                    system_verilog_code,
+                    ex_gen.getContentByFilename("RTL_X.sv")
+            );
+            Logger.getLogger(TranspilerTest.class.getName()).log(Level.SEVERE, diff);
+
+            Assertions.assertTrue(system_verilog_code.equals(ex_gen.getContentByFilename("RTL_X.sv")));
 
         } catch (Exception ex) {
             Logger.getLogger(TranspilerTest.class.getName()).log(Level.SEVERE, null, ex);
