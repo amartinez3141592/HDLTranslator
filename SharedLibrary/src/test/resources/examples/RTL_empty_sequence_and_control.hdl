@@ -1,0 +1,10 @@
+MODULE: empty;
+INPUT: a[3], VCC, GND, clk, reset;
+OUTPUT: led[3];
+        MEMORY: isActivated;
+	SEQUENCE(0):
+	END_SEQUENCE;
+
+	CONTROL RESET (0):
+	END_CONTROL;
+END_MODULE;

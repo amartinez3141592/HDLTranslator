@@ -1,7 +1,7 @@
 MODULE: tick_light;
 INPUT: btn_activate, VCC, GND, clk, reset;
 OUTPUT: red_led;
-MEMORY: isActivated;
+	MEMORY: isActivated;
 	SEQUENCE(2):
 		STEP(0):
 		    red_led = VCC;
@@ -10,5 +10,8 @@ MEMORY: isActivated;
                 STEP(1):
 		    red_led = GND;
 		=> ( VCC ) / ( 0 );
-	END_SEQUENCE
-END_MODULE
+	END_SEQUENCE;
+	CONTROL RESET (0):
+
+	END_CONTROL;
+END_MODULE;
