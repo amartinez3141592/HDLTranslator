@@ -96,7 +96,9 @@ public class TreeExport {
         sequence_def_transpile(
                 sequence_def,
                 (InternalNodeLinked) body_def.getChildrenByDescription("memory_def"),
-                output_def.reference_tree.clone());
+                output_def.reference_tree.clone(),
+                (InternalNodeLinked) body_def.getChildrenByDescription("control_reset_def")
+        );
 
         body_def.children.get(3).description = "\n";
         body_def.children.get(1).description = ";\n";
@@ -464,7 +466,9 @@ public class TreeExport {
      * @param memory_def
      * @param output_ref
      */
-    public void sequence_def_transpile(InternalNode sequence_def, InternalNodeLinked memory_def, InternalNode output_ref) {
+    public void sequence_def_transpile(
+            InternalNode sequence_def, InternalNodeLinked memory_def,
+            InternalNode output_ref, InternalNodeLinked control_reset_def) {
 
         InternalNode sequence_ref = ((InternalNodeLinked) sequence_def).reference_tree;
 
@@ -481,7 +485,7 @@ public class TreeExport {
         create_always_comb(sequence_def,
                 memory_def.reference_tree,
                 output_ref.clone(),
-                sequence_ref.clone(), n_steps);
+                sequence_ref.clone(), n_steps, control_reset_def);
 
         sequence_def.children.add(new Leaf(add_tab(1) + "end\n"));
 
@@ -530,46 +534,69 @@ public class TreeExport {
      * @param sequence_ref
      */
     public void create_always_comb(
-            InternalNode sequence_def, InternalNode memory_ref, InternalNode output_ref, InternalNode sequence_ref, int n_steps) {
+            InternalNode sequence_def, InternalNode memory_ref,
+            InternalNode output_ref, InternalNode sequence_ref, int n_steps,
+            InternalNodeLinked control_reset_def) {
 
         sequence_def.children.add(new Leaf(add_tab(1) + "always_comb begin \n"));
-        
+
         if (n_steps > 0) {
             // define next value as actual value all variable_def on memory
             sequence_def.children.add(new Leaf(
                     add_tab(2) + "next_state = state;\n"
             ));
         }
-        
+
         for (InternalNode node : memory_ref.getAllDescendencyByDescription("variable_def")) {
             String var_name = node.children.get(0).description;
             sequence_def.children.add(new Leaf(
                     add_tab(2) + "next_" + var_name + " = " + var_name + ";\n"
             ));
         }
+        ArrayList<String> control_variables_def = new ArrayList();
 
-        // set default output to 0
+        // set default output and memory assignation on control reset and save 
+        // cache of control_variables to avoid variable replicant
+        for (InternalNode step_def : control_reset_def.getAllDescendencyByDescription("step_def")) {
+            InternalNode variable_def = (InternalNode) step_def.children.get(0);
+            
+            String var_name = variable_def.children.get(0).description;
+            
+            sequence_def.children.add(new Leaf(
+                    add_tab(2) + var_name + "="
+            ));
+            sequence_def.children.add(variable_def.children.get(2));
+            
+            sequence_def.children.add(new Leaf(";\n"));
+            // save it because i use it on the next output initialization for
+            control_variables_def.add(var_name);
+
+        }
+        
+        // set default output and memory that is not on control reset to 0
         for (InternalNode node : output_ref.getAllDescendencyByDescription("variable_def")) {
             String aux_str_binary = "";
             String var_name = node.children.get(0).description;
-            if (node.children.size() == 1) {
-                // variable
+            if (!control_variables_def.contains(var_name)) {
+                if (node.children.size() == 1) {
+                    // variable
+                    sequence_def.children.add(new Leaf(
+                            add_tab(2) + var_name + " = 1'b0;\n"
+                    ));
 
-                sequence_def.children.add(new Leaf(
-                        add_tab(2) + var_name + " = 1'b0;\n"
-                ));
-
-            } else if (node.children.size() == 4) {
-                //array
-                int size_array = Integer.parseInt(node.children.get(2).description);
-                for (int i = 0; i < size_array; i++) {
-                    aux_str_binary += "0";
+                } else if (node.children.size() == 4) {
+                    //array
+                    int size_array = Integer.parseInt(node.children.get(2).description);
+                    for (int i = 0; i < size_array; i++) {
+                        aux_str_binary += "0";
+                    }
+                    sequence_def.children.add(new Leaf(
+                            add_tab(2) + var_name + " = " + size_array + "'b" + aux_str_binary + ";\n"
+                    ));
                 }
-                sequence_def.children.add(new Leaf(
-                        add_tab(2) + var_name + " = " + size_array + "'b" + aux_str_binary + ";\n"
-                ));
             }
         }
+        
         if (n_steps > 0) {
             InternalNode steps_ref = (InternalNode) sequence_ref.getDescendencyByDescription("steps_def");
             // state changes

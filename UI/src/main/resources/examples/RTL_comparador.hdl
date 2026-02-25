@@ -1,7 +1,7 @@
 MODULE: comparador;
 INPUT: x[8], a, b, VCC, GND, clk, reset;
 OUTPUT: z[8], out;
-	MEMORY: A[8], cont[2];
+        MEMORY: A[8], cont[2];
 	SEQUENCE(4):
 		STEP(0):
 		    A <= x;
