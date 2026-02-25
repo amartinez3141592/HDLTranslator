@@ -40,4 +40,6 @@ module tick_light(
 			end
 		endcase
 	end
+
 endmodule
+

@@ -41,13 +41,13 @@ module comparador(
 		case(state)
 			S0: begin
 				next_A=x;
-				if (a) begin next_state = S2;
-				end else if (!a) begin next_state = S1;
+				if (a) begin next_state = S1;
+				end else if (!a) begin next_state = S0;
 				end
 			end
 			S1: begin
-				if (b) begin next_state = S3;
-				end else if (!b) begin next_state = S2;
+				if (b) begin next_state = S2;
+				end else if (!b) begin next_state = S1;
 				end
 			end
 			S2: begin
@@ -62,10 +62,12 @@ module comparador(
 				next_cont=INC(cont);
 				out=1'b1;
 				z=A;
-				if (EQ(cont,2'b11)) begin next_state = S1;
-				end else if (!EQ(cont,2'b11)) begin next_state = S4;
+				if (cont==2'b11) begin next_state = S0;
+				end else if (!(cont==2'b11)) begin next_state = S3;
 				end
 			end
 		endcase
 	end
+
 endmodule
+

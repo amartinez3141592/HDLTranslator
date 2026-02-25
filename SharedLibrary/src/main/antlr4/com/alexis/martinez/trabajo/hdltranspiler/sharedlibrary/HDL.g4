@@ -5,17 +5,27 @@
 grammar HDL;
 // TODO: test usign ? in recursion and see if performance improves
 program
-    : module_def SEMI input_def SEMI output_def SEMI memory_def SEMI sequence_def END_MODULE program? EOF
+    : module_def (program)? EOF
     ;
 
-/*
-module
-    : 
-    ;
-*/
 
 module_def
-    : MODULE DESCRIBE ID
+    : MODULE DESCRIBE ID SEMI
+    input_def SEMI
+    output_def SEMI
+    body_def
+    END_MODULE
+    SEMI
+    ;
+
+body_def
+    : memory_def SEMI sequence_def SEMI control_reset_def SEMI
+    ;
+
+control_reset_def
+    : CONTROL_RESET LPAREN NUMBER RPAREN DESCRIBE
+           step_def?
+      END_CONTROL
     ;
 
 variable_def
@@ -39,7 +49,9 @@ memory_def
     ;
 
 sequence_def
-    : SEQUENCE LPAREN NUMBER RPAREN DESCRIBE steps_def END_SEQUENCE
+    : SEQUENCE LPAREN NUMBER RPAREN DESCRIBE
+        steps_def?
+    END_SEQUENCE
     //    | SEQUENCE DESCRIBE END_SEQUENCE
     ;
 
@@ -59,7 +71,7 @@ step_def
 
 assign_output
     : ID EQ ( expr |
-            assignation_input_list )
+    assignation_input_list )
     ;
 
 assignation_input_list
@@ -82,8 +94,15 @@ expr
     | variable_def
     | module_call
     | (NOT expr)
-    | (variable_def OR expr)
-    | (variable_def AND expr)
+    | ((variable_def| module_call) OR expr)
+    | ((variable_def| module_call) AND expr)
+    | ((variable_def| module_call) EQUALS expr)
+    | ((variable_def| module_call) NOT_EQUALS expr)
+    | (LPAREN expr RPAREN)
+    | ((variable_def| module_call) OR LPAREN expr RPAREN)
+    | ((variable_def| module_call) AND LPAREN expr RPAREN)
+    | ((variable_def| module_call) EQUALS LPAREN expr RPAREN)
+    | ((variable_def| module_call) NOT_EQUALS LPAREN expr RPAREN)
     ;
 
 
@@ -101,7 +120,10 @@ module_call : ID LPAREN call_input_list RPAREN;
 // lexer grammar ExprLexer;
 // uncomment on testing on a website, maybe it can be in diff files
 CONST_DEF_SIGN : '\'';
-
+CONTROL_RESET : 'CONTROL RESET';
+END_CONTROL : 'END_CONTROL';
+EQUALS : '==';
+NOT_EQUALS: '!=';
 CONDITIONED_BY: '*';
 NUMBER : [0-9]+ ;
 MEM_ASSIGN : '<=';

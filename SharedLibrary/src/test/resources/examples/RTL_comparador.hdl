@@ -1,15 +1,15 @@
 MODULE: comparador;
 INPUT: x[8], a, b, VCC, GND, clk, reset;
 OUTPUT: z[8], out;
-MEMORY: A[8], cont[2];
+        MEMORY: A[8], cont[2];
 	SEQUENCE(4):
 		STEP(0):
 		    A <= x;
-		=> ( a, !a ) / ( 2, 1 );
+		=> ( a, !a ) / ( 1, 0);
 	
 		STEP(1):
 		 
-                => ( b, !b ) / ( 3, 2 );
+                => ( b, !b ) / ( 2, 1 );
 	
 		STEP(2):
                     A * mayor <=x;
@@ -20,7 +20,10 @@ MEMORY: A[8], cont[2];
 			cont <= INC(cont);
 			out = 1'b1;
 			z=A;	
-                => ( EQ(cont, 2'b11), !EQ(cont, 2'b11) ) / ( 1, 4 );
+                => (cont == 2'b11, ! (cont == 2'b11)) / ( 0, 3 );
 
-	END_SEQUENCE
-END_MODULE
+	END_SEQUENCE;
+	CONTROL RESET (0):
+
+	END_CONTROL;
+END_MODULE;

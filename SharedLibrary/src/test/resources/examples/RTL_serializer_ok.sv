@@ -49,4 +49,6 @@ module parallel_to_serial(
 			end
 		endcase
 	end
+
 endmodule
+
