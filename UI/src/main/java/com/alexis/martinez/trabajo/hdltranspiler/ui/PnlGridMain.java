@@ -26,23 +26,70 @@ public class PnlGridMain extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         pnl_RTL_input1 = new com.alexis.martinez.trabajo.hdltranspiler.ui.PnlRTLInput();
         pnl_system_verilog_output = new com.alexis.martinez.trabajo.hdltranspiler.ui.PnlSystemVerilogOutput();
-        pnl_output_console = new com.alexis.martinez.trabajo.hdltranspiler.ui.PnlConsoleOutput();
-        pnl_operations = new com.alexis.martinez.trabajo.hdltranspiler.ui.PnlOperations();
+        bottomInfo1 = new com.alexis.martinez.trabajo.hdltranspiler.ui.BottomInfo();
 
-        setLayout(new java.awt.GridLayout(2, 2));
-        add(pnl_RTL_input1);
-        add(pnl_system_verilog_output);
-        add(pnl_output_console);
-        add(pnl_operations);
+        setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jPanel1.setLayout(new java.awt.GridLayout(1, 2, 15, 15));
+
+        pnl_RTL_input1.setMaximumSize(new java.awt.Dimension(2147483647, 643240));
+        jPanel1.add(pnl_RTL_input1);
+        jPanel1.add(pnl_system_verilog_output);
+
+        add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        bottomInfo1.setMinimumSize(new java.awt.Dimension(209, 30));
+        bottomInfo1.setPreferredSize(new java.awt.Dimension(563, 100));
+        add(bottomInfo1, java.awt.BorderLayout.PAGE_END);
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public com.alexis.martinez.trabajo.hdltranspiler.ui.PnlRTLInput pnl_RTL_input1;
-    public com.alexis.martinez.trabajo.hdltranspiler.ui.PnlOperations pnl_operations;
-    public com.alexis.martinez.trabajo.hdltranspiler.ui.PnlConsoleOutput pnl_output_console;
-    public com.alexis.martinez.trabajo.hdltranspiler.ui.PnlSystemVerilogOutput pnl_system_verilog_output;
+    private com.alexis.martinez.trabajo.hdltranspiler.ui.BottomInfo bottomInfo1;
+    private javax.swing.JPanel jPanel1;
+    private com.alexis.martinez.trabajo.hdltranspiler.ui.PnlRTLInput pnl_RTL_input1;
+    private com.alexis.martinez.trabajo.hdltranspiler.ui.PnlSystemVerilogOutput pnl_system_verilog_output;
     // End of variables declaration//GEN-END:variables
+
+    public javax.swing.JTextArea getConsoleOutputComponent() {
+        return bottomInfo1.getTextAreaOutputConsole();
+    }
+
+    public void setSystemVerilogOutput(String text) {
+        this.pnl_system_verilog_output.getTextAreaOutput().setText(text);
+        this.pnl_system_verilog_output.getTextAreaOutput().setCaretPosition(0);
+    }
+
+    public void setRTLInput(String text) {
+        pnl_RTL_input1.setInputRTL(text);
+    }
+
+    public String getInputRTLValue() {
+        return this.pnl_RTL_input1.getInputRTLValue();
+    }
+
+    public void setConsoleOutput(String value) {
+        this.bottomInfo1.getTextAreaOutputConsole().setText(value);
+    }
+
+    public void reset() {
+        this.pnl_RTL_input1.reset();
+        this.bottomInfo1.reset();
+        this.pnl_system_verilog_output.reset();
+    }
+
+    void setLblFile(String value) {
+        pnl_RTL_input1.setLblFile(value);
+    }
+    public boolean get_input_changed() {
+        return this.pnl_RTL_input1.get_input_changed();
+    }
+
+    public void resetWasEdited() {
+        this.pnl_RTL_input1.resetWasEdited();
+    }
 }

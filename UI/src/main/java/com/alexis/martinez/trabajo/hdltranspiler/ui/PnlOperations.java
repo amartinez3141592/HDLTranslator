@@ -30,10 +30,14 @@ public class PnlOperations extends javax.swing.JPanel {
 
         btn_show_graph = new javax.swing.JButton();
 
+        setMaximumSize(new java.awt.Dimension(32767, 40));
+        setPreferredSize(new java.awt.Dimension(105, 68));
         setLayout(new java.awt.GridLayout(1, 0));
 
         btn_show_graph.setText("Show graph");
         btn_show_graph.setToolTipText("");
+        btn_show_graph.setMaximumSize(new java.awt.Dimension(32314, 413431));
+        btn_show_graph.setMinimumSize(new java.awt.Dimension(105, 10));
         btn_show_graph.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_show_graphActionPerformed(evt);

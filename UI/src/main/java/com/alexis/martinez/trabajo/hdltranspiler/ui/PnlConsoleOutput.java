@@ -4,6 +4,8 @@
  */
 package com.alexis.martinez.trabajo.hdltranspiler.ui;
 
+import javax.swing.JTextArea;
+
 /**
  *
  * @author Alexis Martinez
@@ -30,13 +32,18 @@ public class PnlConsoleOutput extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         txt_area_output = new javax.swing.JTextArea();
 
+        setPreferredSize(new java.awt.Dimension(97, 68));
         setLayout(new java.awt.BorderLayout());
 
         lbl_console_output.setText("Console output");
         add(lbl_console_output, java.awt.BorderLayout.PAGE_START);
 
-        txt_area_output.setColumns(20);
-        txt_area_output.setRows(5);
+        txt_area_output.setEditable(false);
+        txt_area_output.setColumns(2);
+        txt_area_output.setRows(2);
+        txt_area_output.setToolTipText("");
+        txt_area_output.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txt_area_output.setMaximumSize(new java.awt.Dimension(2147483647, 40));
         jScrollPane1.setViewportView(txt_area_output);
 
         add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -46,6 +53,14 @@ public class PnlConsoleOutput extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_console_output;
-    public javax.swing.JTextArea txt_area_output;
+    private javax.swing.JTextArea txt_area_output;
     // End of variables declaration//GEN-END:variables
+
+    JTextArea getTextAreaOutput() {
+        return txt_area_output;
+    }
+    
+    void clear() {
+        txt_area_output.setText("");
+    }
 }

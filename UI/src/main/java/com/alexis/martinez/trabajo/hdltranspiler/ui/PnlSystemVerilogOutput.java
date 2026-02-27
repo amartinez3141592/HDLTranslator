@@ -3,6 +3,7 @@ package com.alexis.martinez.trabajo.hdltranspiler.ui;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import javax.swing.JTextArea;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -70,6 +71,14 @@ public class PnlSystemVerilogOutput extends javax.swing.JPanel {
     private javax.swing.JButton btn_copy;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_system_verilog;
-    public javax.swing.JTextArea txt_area_output_system_verilog;
+    private javax.swing.JTextArea txt_area_output_system_verilog;
     // End of variables declaration//GEN-END:variables
+
+    JTextArea getTextAreaOutput() {
+        return txt_area_output_system_verilog;
+    }
+
+    void reset() {
+        txt_area_output_system_verilog.setText("");
+    }
 }

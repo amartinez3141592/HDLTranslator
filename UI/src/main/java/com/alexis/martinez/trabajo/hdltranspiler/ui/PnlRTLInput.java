@@ -4,15 +4,10 @@
  */
 package com.alexis.martinez.trabajo.hdltranspiler.ui;
 
- import com.alexis.martinez.trabajo.hdltranspiler.ui.control.ExampleGenerator;
+import com.alexis.martinez.trabajo.hdltranspiler.ui.control.ExampleGenerator;
+import javax.swing.JEditorPane;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JScrollBar;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -25,6 +20,7 @@ public class PnlRTLInput extends javax.swing.JPanel {
      */
     public PnlRTLInput() {
         initComponents();
+        this.reset();
     }
 
     /**
@@ -36,25 +32,17 @@ public class PnlRTLInput extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lbl_rtl_description = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        input_rtl = new javax.swing.JTextArea();
+        _txt_input_rtl = new javax.swing.JEditorPane();
+        lbl_title = new javax.swing.JLabel();
         btn_example = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txt_input_rtl = new javax.swing.JTextArea();
 
         setLayout(new java.awt.BorderLayout());
 
-        lbl_rtl_description.setText("RTL description");
-        lbl_rtl_description.setToolTipText("");
-        add(lbl_rtl_description, java.awt.BorderLayout.PAGE_START);
-
-        input_rtl.setColumns(20);
-        input_rtl.setRows(5);
-        input_rtl.setTabSize(2);
-        input_rtl.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        input_rtl.setOpaque(false);
-        jScrollPane1.setViewportView(input_rtl);
-
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
+        lbl_title.setText("<Not saved>");
+        lbl_title.setToolTipText("");
+        add(lbl_title, java.awt.BorderLayout.PAGE_START);
 
         btn_example.setText("Example !");
         btn_example.addActionListener(new java.awt.event.ActionListener() {
@@ -63,21 +51,73 @@ public class PnlRTLInput extends javax.swing.JPanel {
             }
         });
         add(btn_example, java.awt.BorderLayout.PAGE_END);
+
+        txt_input_rtl.setColumns(20);
+        txt_input_rtl.setRows(5);
+        txt_input_rtl.setTabSize(3);
+        txt_input_rtl.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_input_rtlKeyTyped(evt);
+            }
+        });
+        jScrollPane2.setViewportView(txt_input_rtl);
+
+        add(jScrollPane2, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_exampleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_exampleActionPerformed
-        this.input_rtl.setText(ex_gen.getContent());
-        this.input_rtl.setCaretPosition(0);
-
+        this.setInputRTL(ex_gen.getContent());
         ex_gen.next();
     }//GEN-LAST:event_btn_exampleActionPerformed
 
-    private final ExampleGenerator ex_gen = new ExampleGenerator();
+    private void txt_input_rtlKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_input_rtlKeyTyped
+        // input was touched always the user type, not setText()
+        if (evt.getKeyChar() != 23) {
+            input_was_touched();
+        }
+    }//GEN-LAST:event_txt_input_rtlKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JEditorPane _txt_input_rtl;
     private javax.swing.JButton btn_example;
-    public javax.swing.JTextArea input_rtl;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lbl_rtl_description;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane lbl_;
+    private javax.swing.JLabel lbl_title;
+    private javax.swing.JTextArea txt_input_rtl;
     // End of variables declaration//GEN-END:variables
+
+    private boolean input_changed = false;
+    private final ExampleGenerator ex_gen = new ExampleGenerator();
+
+    void setInputRTL(String text) {
+        this.txt_input_rtl.setText(text);
+        this.txt_input_rtl.setCaretPosition(0);
+    }
+
+    String getInputRTLValue() {
+        return this.txt_input_rtl.getText();
+    }
+
+    boolean get_input_changed() {
+        return this.input_changed;
+    }
+
+    void reset() {
+        this.lbl_title.setText("<Not saved>");
+        this.txt_input_rtl.setText("");
+        this.input_changed = false;
+
+    }
+
+    void setLblFile(String value) {
+        lbl_title.setText(value);
+    }
+
+    private void input_was_touched() {
+        input_changed = true;
+    }
+
+    void resetWasEdited() {
+        input_changed = false;
+    }
 }

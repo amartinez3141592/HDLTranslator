@@ -16,7 +16,12 @@ import java.util.logging.Logger;
  */
 public class ExampleGenerator {
     private int i = 0;
-    private final String[] files = { "RTL_tick_led.hdl", "RTL_serializer.hdl", "RTL_comparador.hdl", "RTL_X.hdl" };
+    private final String[] files = {
+        "RTL_tick_led.hdl",
+        "RTL_serializer.hdl",
+        "RTL_empty_sequence_and_control.hdl",
+        "RTL_comparador.hdl"
+    };
     
     public void load() {
     
