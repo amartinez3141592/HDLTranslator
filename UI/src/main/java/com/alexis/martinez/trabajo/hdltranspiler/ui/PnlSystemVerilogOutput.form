@@ -45,9 +45,6 @@
             <Property name="rows" type="int" value="5"/>
             <Property name="tabSize" type="int" value="2"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
-          </AuxValues>
         </Component>
       </SubComponents>
     </Container>

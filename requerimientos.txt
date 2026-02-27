@@ -1,0 +1,3 @@
+Requerimeintos funcionales:
+* transpilador de hdl informal a system verilog
+* 
