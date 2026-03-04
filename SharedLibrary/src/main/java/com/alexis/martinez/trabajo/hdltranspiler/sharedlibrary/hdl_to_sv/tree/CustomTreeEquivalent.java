@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.tree;
+package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree;
 
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HDLParser;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl.HDLParser;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -21,7 +22,7 @@ public class CustomTreeEquivalent {
     // base step
     public static InternalNode parse(
             ParseTree node,
-            HDLParser parser
+            Parser parser
     ) throws Exception {
         rule_names = parser.getRuleNames();
         if (node instanceof TerminalNode) {
@@ -53,7 +54,7 @@ public class CustomTreeEquivalent {
     public static InternalNode parse(
             InternalNode parent,
             ParseTree node,
-            HDLParser parser
+            Parser parser
     ) throws Exception {
 
         if (node instanceof TerminalNode) {

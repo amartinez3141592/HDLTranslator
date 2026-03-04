@@ -4,10 +4,8 @@
  */
 package com.alexis.martinez.trabajo.hdltranspiler.ui;
 
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HdlTranspiler;
-import com.alexis.martinez.trabajo.hdltranspiler.ui.input_state.InputState;
-import com.alexis.martinez.trabajo.hdltranspiler.ui.input_state.None;
-import com.alexis.martinez.trabajo.hdltranspiler.ui.input_state.FileExists;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.HdlToSV;
+import com.alexis.martinez.trabajo.hdltranspiler.ui.file.FileManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,11 +26,13 @@ import javax.swing.JOptionPane;
  */
 public class TranspilerUI extends javax.swing.JFrame {
 
-    private File actual_file;
+    private FileManager file_manager;
+
     /**
      * Creates new form TranspilerUI
      */
     public TranspilerUI() {
+        file_manager = new FileManager();
         initComponents();
     }
 
@@ -56,6 +56,9 @@ public class TranspilerUI extends javax.swing.JFrame {
         menu_save_hdl = new javax.swing.JMenuItem();
         menu_close_hdl = new javax.swing.JMenuItem();
         menu_edit = new javax.swing.JMenu();
+        menu_undo = new javax.swing.JMenuItem();
+        menu_redo = new javax.swing.JMenuItem();
+        menu_reset = new javax.swing.JMenuItem();
 
         file_chooser_open.setToolTipText("");
         file_chooser_open.getAccessibleContext().setAccessibleParent(this);
@@ -68,7 +71,7 @@ public class TranspilerUI extends javax.swing.JFrame {
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         setIconImage((new FlatSVGIcon("svg/icon.svg")).getImage());
         setMinimumSize(new java.awt.Dimension(745, 545));
-        setPreferredSize(new java.awt.Dimension(580, 248));
+        setPreferredSize(new java.awt.Dimension(745, 545));
 
         btn_convert.setText("Convert to SystemVerilog");
         btn_convert.addActionListener(new java.awt.event.ActionListener() {
@@ -120,6 +123,34 @@ public class TranspilerUI extends javax.swing.JFrame {
         menu_bar.add(menu_file);
 
         menu_edit.setText("Edit");
+
+        menu_undo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menu_undo.setText("Undo");
+        menu_undo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_undoActionPerformed(evt);
+            }
+        });
+        menu_edit.add(menu_undo);
+
+        menu_redo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menu_redo.setText("Redo");
+        menu_redo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_redoActionPerformed(evt);
+            }
+        });
+        menu_edit.add(menu_redo);
+
+        menu_reset.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        menu_reset.setText("Reset");
+        menu_reset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_resetActionPerformed(evt);
+            }
+        });
+        menu_edit.add(menu_reset);
+
         menu_bar.add(menu_edit);
 
         setJMenuBar(menu_bar);
@@ -134,12 +165,12 @@ public class TranspilerUI extends javax.swing.JFrame {
         this.pnlGridMain1.setSystemVerilogOutput("");
         try {
             String input = this.pnlGridMain1.getInputRTLValue();
-            String transpile_out = HdlTranspiler.transpile(input);
+            String transpile_out = HdlToSV.transpile_hdl_to_sv(input);
             this.pnlGridMain1.setSystemVerilogOutput(transpile_out);
         } catch (Exception ex) {
             Logger.getLogger(TranspilerUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        this.pnlGridMain1.setConsoleOutput(HdlTranspiler.toStringTreeForLookingForSyntaxErrors());
+        this.pnlGridMain1.setConsoleOutput(HdlToSV.toStringTreeForLookingForSyntaxErrors());
 
     }//GEN-LAST:event_btn_convertActionPerformed
 
@@ -156,7 +187,7 @@ public class TranspilerUI extends javax.swing.JFrame {
         if (save != JOptionPane.CANCEL_OPTION) {
             if (create_new_file() == JFileChooser.APPROVE_OPTION) {
                 this.pnlGridMain1.reset();
-                this.pnlGridMain1.setLblFile(actual_file.getName());
+                this.pnlGridMain1.setLblFile(file_manager.getName());
             }
         }
     }//GEN-LAST:event_menu_new_HDL_fileActionPerformed
@@ -178,38 +209,47 @@ public class TranspilerUI extends javax.swing.JFrame {
     }//GEN-LAST:event_menu_open_hdlActionPerformed
 
     private void menu_close_hdlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_close_hdlActionPerformed
-        int save = JOptionPane.YES_OPTION;
 
         if (this.pnlGridMain1.get_input_changed()) {
-            save = answerUserToSaveTheirWork();
+            int save = answerUserToSaveTheirWork();
 
             if (save == JOptionPane.YES_OPTION) {
                 menu_save_hdlActionPerformed(evt);
+            } else if (save == JOptionPane.NO_OPTION) {
+                this.pnlGridMain1.reset();
+                this.file_manager.reset();
             }
-        }
-        if (save != JOptionPane.CANCEL_OPTION) {
+        } else {
             this.pnlGridMain1.reset();
-            is = is.close();
+            this.file_manager.reset();
         }
+
 
     }//GEN-LAST:event_menu_close_hdlActionPerformed
 
     private void menu_save_hdlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_save_hdlActionPerformed
-
-        if (is instanceof FileExists) {
-            saveFromFile(actual_file);
-            this.pnlGridMain1.resetWasEdited();
-
-        } else if (is instanceof None) {
+        if (!file_manager.save(this.pnlGridMain1.getInputRTLValue())) {
             if (create_new_file() == JFileChooser.APPROVE_OPTION) {
-                saveFromFile(actual_file);
-                this.pnlGridMain1.resetWasEdited();
+                file_manager.save(this.pnlGridMain1.getInputRTLValue());
             }
-        } else {
-            throw new UnsupportedOperationException("Invalid option.");
         }
+        this.pnlGridMain1.on_save();
+        this.pnlGridMain1.resetWasEdited();
 
     }//GEN-LAST:event_menu_save_hdlActionPerformed
+
+    private void menu_undoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_undoActionPerformed
+
+        this.pnlGridMain1.undo();
+    }//GEN-LAST:event_menu_undoActionPerformed
+
+    private void menu_redoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_redoActionPerformed
+        this.pnlGridMain1.redo();
+    }//GEN-LAST:event_menu_redoActionPerformed
+
+    private void menu_resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_resetActionPerformed
+        this.pnlGridMain1.reset_history();
+    }//GEN-LAST:event_menu_resetActionPerformed
 
     /**
      * @param args the command line arguments
@@ -263,24 +303,12 @@ public class TranspilerUI extends javax.swing.JFrame {
     private javax.swing.JMenu menu_file;
     private javax.swing.JMenuItem menu_new_HDL_file;
     private javax.swing.JMenuItem menu_open_hdl;
+    private javax.swing.JMenuItem menu_redo;
+    private javax.swing.JMenuItem menu_reset;
     private javax.swing.JMenuItem menu_save_hdl;
+    private javax.swing.JMenuItem menu_undo;
     private com.alexis.martinez.trabajo.hdltranspiler.ui.PnlGridMain pnlGridMain1;
     // End of variables declaration//GEN-END:variables
-    private InputState is = new None();
-
-    private void saveFromFile(File file) {
-        try {
-            FileWriter fw = new FileWriter(file.getAbsolutePath());
-            fw.write(this.pnlGridMain1.getInputRTLValue());
-            fw.close();
-
-            is = is.new_file();
-
-        } catch (IOException ex) {
-            Logger.getLogger(TranspilerUI.class
-                    .getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
     public int answerUserToSaveTheirWork() {
         return JOptionPane.showConfirmDialog(
@@ -290,40 +318,33 @@ public class TranspilerUI extends javax.swing.JFrame {
                 JOptionPane.YES_NO_CANCEL_OPTION);
     }
 
-    private int create_new_file() {
+    public int create_new_file() {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "HDL", "hdl");
         file_chooser_save.setFileFilter(filter);
         int returnVal = file_chooser_save.showSaveDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            this.actual_file = file_chooser_save.getSelectedFile();
-            is = is.new_file();
+            file_manager.create_new_file(file_chooser_save.getSelectedFile());
+            this.pnlGridMain1.setLblFile(file_manager.getName());
         }
         return returnVal;
     }
 
-    private void open_file() {
+    public void open_file() {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "HDL", "hdl");
         file_chooser_open.setFileFilter(filter);
         int returnVal = file_chooser_open.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
-            this.actual_file = file_chooser_open.getSelectedFile();
-
             try {
-                String content = Files.readString(actual_file.toPath());
+                String content = file_manager.open_file(file_chooser_open.getSelectedFile());
                 this.pnlGridMain1.reset();
                 this.pnlGridMain1.setRTLInput(content);
-                this.pnlGridMain1.setLblFile(actual_file.getName());
-
-                is = is.new_file();
+                this.pnlGridMain1.setLblFile(file_manager.getName());
 
             } catch (IOException ex) {
-                Logger.getLogger(TranspilerUI.class
-                        .getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(TranspilerUI.class.getName()).log(Level.SEVERE, null, ex);
             }
-
         }
     }
-
 }

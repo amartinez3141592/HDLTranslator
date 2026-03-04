@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.alexis.martinez.trabajo.hdltranspiler.ui.input_state;
+package com.alexis.martinez.trabajo.hdltranspiler.ui.file;
 
 /**
  *

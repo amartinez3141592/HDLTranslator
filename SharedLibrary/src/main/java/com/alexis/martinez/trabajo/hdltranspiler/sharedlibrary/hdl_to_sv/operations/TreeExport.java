@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.operations;
+package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.operations;
 
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.tree.InternalNode;
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.tree.InternalNodeLinked;
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.tree.Leaf;
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.tree.Node;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.InternalNode;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.InternalNodeLinked;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.Leaf;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.Node;
 import java.util.ArrayList;
 
 /**
@@ -673,5 +673,4 @@ public class TreeExport {
             sequence_def.children.add(new Leaf(add_tab(2) + "endcase\n"));
         }
     }
-
 }

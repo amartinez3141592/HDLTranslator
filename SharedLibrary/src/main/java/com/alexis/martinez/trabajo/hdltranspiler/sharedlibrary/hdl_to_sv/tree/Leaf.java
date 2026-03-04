@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.tree;
+package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree;
 
 /**
  *
@@ -27,8 +27,11 @@ public class Leaf extends Node {
     @Override
     public String toString() {
         return this.description.toString();
+    }    
+    @Override
+    public String toStringWithSpaces() {
+        return " " + this.description.toString();
     }
-
     @Override
     public void print() {
         System.out.print(description);

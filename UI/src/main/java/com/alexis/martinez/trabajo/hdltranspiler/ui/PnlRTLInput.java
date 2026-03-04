@@ -5,9 +5,7 @@
 package com.alexis.martinez.trabajo.hdltranspiler.ui;
 
 import com.alexis.martinez.trabajo.hdltranspiler.ui.control.ExampleGenerator;
-import javax.swing.JEditorPane;
-
-import javax.swing.JTextArea;
+import com.alexis.martinez.trabajo.hdltranspiler.ui.file.History;
 
 /**
  *
@@ -15,11 +13,14 @@ import javax.swing.JTextArea;
  */
 public class PnlRTLInput extends javax.swing.JPanel {
 
+    private final History history;
+
     /**
      * Creates new form RTL_input
      */
     public PnlRTLInput() {
         initComponents();
+        this.history = new History();
         this.reset();
     }
 
@@ -90,6 +91,7 @@ public class PnlRTLInput extends javax.swing.JPanel {
     private final ExampleGenerator ex_gen = new ExampleGenerator();
 
     void setInputRTL(String text) {
+        this.history.add(text);
         this.txt_input_rtl.setText(text);
         this.txt_input_rtl.setCaretPosition(0);
     }
@@ -106,7 +108,7 @@ public class PnlRTLInput extends javax.swing.JPanel {
         this.lbl_title.setText("<Not saved>");
         this.txt_input_rtl.setText("");
         this.input_changed = false;
-
+        this.history.reset();
     }
 
     void setLblFile(String value) {
@@ -118,6 +120,27 @@ public class PnlRTLInput extends javax.swing.JPanel {
     }
 
     void resetWasEdited() {
-        input_changed = false;
+        this.input_changed = false;
+    }
+
+    void undo() {
+        this.history.undo();
+        this.txt_input_rtl.setText(history.get());
+        this.input_changed = true;
+    }
+
+    void redo() {
+        this.history.redo();
+        this.txt_input_rtl.setText(history.get());
+        this.input_changed = true;
+    }
+
+    void reset_history() {
+        this.history.reset();
+        this.history.add(this.txt_input_rtl.getText());
+    }
+
+    void on_save() {
+        this.history.add(this.txt_input_rtl.getText());
     }
 }

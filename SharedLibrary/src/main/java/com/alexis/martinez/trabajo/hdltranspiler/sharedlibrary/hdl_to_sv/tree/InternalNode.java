@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.tree;
+package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree;
 
 import java.util.ArrayList;
 
@@ -43,6 +43,14 @@ public class InternalNode extends Node {
         String r = "";
         for (Node node : children) {
             r+= node.toString();
+        }
+        return r;
+    }
+    
+    public String toStringWithSpaces() {
+        String r = "";
+        for (Node node : children) {
+            r+= node.toStringWithSpaces();
         }
         return r;
     }

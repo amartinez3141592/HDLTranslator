@@ -33,7 +33,9 @@ public class PnlGridMain extends javax.swing.JPanel {
 
         setLayout(new java.awt.BorderLayout(15, 15));
 
-        bottomInfo1.setPreferredSize(new java.awt.Dimension(225, 75));
+        bottomInfo1.setMinimumSize(new java.awt.Dimension(209, 10));
+        bottomInfo1.setOpaque(false);
+        bottomInfo1.setPreferredSize(new java.awt.Dimension(225, 80));
         add(bottomInfo1, java.awt.BorderLayout.PAGE_END);
 
         jPanel1.setLayout(new java.awt.GridLayout(1, 2, 15, 15));
@@ -72,6 +74,10 @@ public class PnlGridMain extends javax.swing.JPanel {
         this.bottomInfo1.getTextAreaOutputConsole().setText(value);
     }
 
+    public void reset_history() {
+        this.pnl_RTL_input1.reset_history();
+    }
+
     public void reset() {
         this.pnl_RTL_input1.reset();
         this.bottomInfo1.reset();
@@ -81,11 +87,24 @@ public class PnlGridMain extends javax.swing.JPanel {
     void setLblFile(String value) {
         pnl_RTL_input1.setLblFile(value);
     }
+
     public boolean get_input_changed() {
         return this.pnl_RTL_input1.get_input_changed();
     }
 
     public void resetWasEdited() {
         this.pnl_RTL_input1.resetWasEdited();
+    }
+
+    void undo() {
+        this.pnl_RTL_input1.undo();
+    }
+
+    void redo() {
+        this.pnl_RTL_input1.redo();
+    }
+
+    void on_save() {
+        this.pnl_RTL_input1.on_save();
     }
 }

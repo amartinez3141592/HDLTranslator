@@ -5,6 +5,7 @@
 package com.alexis.martinez.trabajo.hdltranspiler.ui;
 
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HdlTranspiler;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.HdlToSV;
 
 /**
  *
@@ -47,7 +48,7 @@ public class PnlOperations extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_show_graphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_show_graphActionPerformed
-        HdlTranspiler.visualize();
+        HdlToSV.visualize();
     }//GEN-LAST:event_btn_show_graphActionPerformed
 
 

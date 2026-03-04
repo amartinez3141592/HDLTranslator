@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.control;
+package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.control;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,9 @@ public class ExampleGenerator {
     public ExampleGenerator() {
 
     }
-
+    public String getFile() {
+        return files[i];
+    }
     /**
      * Move the index of the example to the next element
      */
@@ -40,7 +42,7 @@ public class ExampleGenerator {
      * @return content of the file in (test or main)/resource/examples/here
      */
     public String getContentByFilename(String file) {
-        InputStream is = ExampleGenerator.class.getResourceAsStream("/examples/" + file);
+        InputStream is = ExampleGenerator.class.getResourceAsStream("/" + file);
         try {
             String example_content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
 
