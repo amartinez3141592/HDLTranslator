@@ -1,13 +1,11 @@
 module parallel_to_serial(
 	input wire [2:0] parallel,
-	input wire VCC,
-	input wire GND,
 	input wire clk,
 	input wire reset,
 	output wire serial
 );
-	reg [2:0] next_aux;
 	reg [2:0] aux;
+	reg [2:0] next_aux;
 	localparam
 		S0 = 3'b100,
 		S1 = 3'b010,
@@ -23,7 +21,7 @@ module parallel_to_serial(
 			state <= next_state;
 		end
 	end
-	always @(parallel) begin
+	always @(parallel or aux or state) begin
 		next_state = state;
 		next_aux = aux;
 		serial = 1'b0;
@@ -31,21 +29,21 @@ module parallel_to_serial(
 			S0: begin
 				next_aux = {parallel[2],parallel[1],parallel[0]};
 				serial = aux[0];
-				if (VCC) begin
+				if (1) begin
 					next_state = S1;
 				end
 			end
 			S1: begin
 				next_aux = {parallel[0],parallel[2],parallel[1]};
 				serial = aux[0];
-				if (VCC) begin
+				if (1) begin
 					next_state = S2;
 				end
 			end
 			S2: begin
 				next_aux = {parallel[1],parallel[0],parallel[2]};
 				serial = aux[0];
-				if (VCC) begin
+				if (1) begin
 					next_state = S0;
 				end
 			end

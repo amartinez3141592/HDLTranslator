@@ -31,23 +31,14 @@ public class PnlSystemVerilogOutput extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        lbl_system_verilog = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        txt_area_output_system_verilog = new javax.swing.JTextArea();
         btn_copy = new javax.swing.JButton();
+        jTabbedOutput = new javax.swing.JTabbedPane();
+        jScrollPaneSV = new javax.swing.JScrollPane();
+        txt_area_output_system_verilog = new javax.swing.JTextArea();
+        jScrollPaneV = new javax.swing.JScrollPane();
+        txt_area_output_converted_to_verilog = new javax.swing.JTextArea();
 
         setLayout(new java.awt.BorderLayout());
-
-        lbl_system_verilog.setText("System Verilog description output");
-        add(lbl_system_verilog, java.awt.BorderLayout.PAGE_START);
-
-        txt_area_output_system_verilog.setEditable(false);
-        txt_area_output_system_verilog.setColumns(20);
-        txt_area_output_system_verilog.setRows(5);
-        txt_area_output_system_verilog.setTabSize(2);
-        jScrollPane1.setViewportView(txt_area_output_system_verilog);
-
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         btn_copy.setText("Copy");
         btn_copy.setToolTipText("");
@@ -57,6 +48,25 @@ public class PnlSystemVerilogOutput extends javax.swing.JPanel {
             }
         });
         add(btn_copy, java.awt.BorderLayout.PAGE_END);
+
+        txt_area_output_system_verilog.setEditable(false);
+        txt_area_output_system_verilog.setColumns(20);
+        txt_area_output_system_verilog.setRows(5);
+        txt_area_output_system_verilog.setTabSize(2);
+        jScrollPaneSV.setViewportView(txt_area_output_system_verilog);
+
+        jTabbedOutput.addTab("System verilog description", jScrollPaneSV);
+
+        txt_area_output_converted_to_verilog.setEditable(false);
+        txt_area_output_converted_to_verilog.setColumns(20);
+        txt_area_output_converted_to_verilog.setRows(5);
+        txt_area_output_converted_to_verilog.setTabSize(2);
+        jScrollPaneV.setViewportView(txt_area_output_converted_to_verilog);
+
+        jTabbedOutput.addTab("Verilog description", jScrollPaneV);
+
+        add(jTabbedOutput, java.awt.BorderLayout.CENTER);
+        jTabbedOutput.getAccessibleContext().setAccessibleName("SystemVerilog");
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_copyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_copyActionPerformed
@@ -69,16 +79,23 @@ public class PnlSystemVerilogOutput extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_copy;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lbl_system_verilog;
+    private javax.swing.JScrollPane jScrollPaneSV;
+    private javax.swing.JScrollPane jScrollPaneV;
+    private javax.swing.JTabbedPane jTabbedOutput;
+    private javax.swing.JTextArea txt_area_output_converted_to_verilog;
     private javax.swing.JTextArea txt_area_output_system_verilog;
     // End of variables declaration//GEN-END:variables
 
-    JTextArea getTextAreaOutput() {
+    JTextArea getTextAreaOutputSV() {
         return txt_area_output_system_verilog;
     }
 
+    JTextArea getTextAreaOutputV() {
+        return txt_area_output_converted_to_verilog;
+    }
+
     void reset() {
+        txt_area_output_converted_to_verilog.setText("");
         txt_area_output_system_verilog.setText("");
     }
 }

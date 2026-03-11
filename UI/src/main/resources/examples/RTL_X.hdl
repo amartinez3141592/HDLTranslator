@@ -1,26 +1,26 @@
 MODULE: RTL_X;
-INPUT: PP, FF_L, VCC, GND, clk, reset;
+INPUT: PP, FF_L, clk, reset;
 OUTPUT: Pista, Posicion[6], Comando[2];
         MEMORY: pos[6], pst[4], Flag;
 	SEQUENCE(4):
 		STEP(0):
-		    pst <= {VCC, VCC, VCC, VCC};
-		    pos <= {VCC, VCC, VCC, VCC, VCC, GND};
-		=> ( VCC ) / ( 1 );
+		    pst <= {1, 1, 1, 1};
+		    pos <= {1, 1, 1, 1, 1, 0};
+		=> ( 1 ) / ( 1 );
 		
 		STEP(1):
-		    Comando = {VCC, VCC};
+		    Comando = {1, 1};
 		=> ( !PP, PP ) / ( 1, 2 );
 
 		STEP(2):
 		    pos * Flag <= {pos[4], pos[3], pos[2], pos[1], pos[0], pos[5]};
-		    Comando = {GND, GND};
+		    Comando = {0, 0};
 		=> ( !PP, PP && FF_L , PP && !FF_L ) / ( 1, 2, 3 );
 
 
 		STEP(3):
 		    pos * Flag <= {pos[4], pos[3], pos[2], pos[1], pos[0], pos[5]};
-		    Comando = {GND, VCC};
+		    Comando = {0, 1};
 		=> ( FF_L , !FF_L ) / (2, 3 );
 
 	END_SEQUENCE;

@@ -477,8 +477,9 @@ public class TreeExport {
         InternalNode type_def_state = new InternalNode("type_def_state");
 
         sequence_def.children.clear();
-
-        create_memory_declaration_and_declare_their_next_value(sequence_def, memory_def);
+            create_memory_declaration_and_declare_their_next_value(
+                    sequence_def,
+                    memory_def);
         create_type_def_state(type_def_state, n_steps);
         sequence_def.children.add(type_def_state);
         create_always_ff(sequence_def, memory_def.reference_tree, n_steps);
@@ -559,20 +560,20 @@ public class TreeExport {
         // cache of control_variables to avoid variable replicant
         for (InternalNode step_def : control_reset_def.getAllDescendencyByDescription("step_def")) {
             InternalNode variable_def = (InternalNode) step_def.children.get(0);
-            
+
             String var_name = variable_def.children.get(0).description;
-            
+
             sequence_def.children.add(new Leaf(
                     add_tab(2) + var_name + "="
             ));
             sequence_def.children.add(variable_def.children.get(2));
-            
+
             sequence_def.children.add(new Leaf(";\n"));
             // save it because i use it on the next output initialization for
             control_variables_def.add(var_name);
 
         }
-        
+
         // set default output and memory that is not on control reset to 0
         for (InternalNode node : output_ref.getAllDescendencyByDescription("variable_def")) {
             String aux_str_binary = "";
@@ -596,7 +597,7 @@ public class TreeExport {
                 }
             }
         }
-        
+
         if (n_steps > 0) {
             InternalNode steps_ref = (InternalNode) sequence_ref.getDescendencyByDescription("steps_def");
             // state changes

@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 public class ExampleGenerator {
 
     private int i = 0;
-    private String[] files = {"RTL_tick_led.hdl", "RTL_comparador.hdl"};
+    private String[] files = {"RTL_tick_led_ok.hdl", "RTL_comparador.hdl"};
     
     public ExampleGenerator() {
 

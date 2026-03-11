@@ -1,20 +1,18 @@
 module RTL_X(
 	input wire PP,
 	input wire FF_L,
-	input wire VCC,
-	input wire GND,
 	input wire clk,
 	input wire reset,
 	output wire Pista,
 	output wire [5:0] Posicion,
 	output wire [1:0] Comando
 );
-	reg [5:0] next_pos;
-	reg [3:0] next_pst;
-	reg next_Flag;
 	reg [5:0] pos;
 	reg [3:0] pst;
 	reg Flag;
+	reg [5:0] next_pos;
+	reg [3:0] next_pst;
+	reg next_Flag;
 	localparam
 		S0 = 4'b1000,
 		S1 = 4'b0100,
@@ -35,7 +33,7 @@ module RTL_X(
 			state <= next_state;
 		end
 	end
-	always @(PP or FF_L) begin
+	always @(PP or FF_L or pos or pst or Flag or state) begin
 		next_state = state;
 		next_pos = pos;
 		next_pst = pst;
@@ -46,14 +44,14 @@ module RTL_X(
 		Comando = 2'b00;
 		case(state)
 			S0: begin
-				next_pst = {VCC,VCC,VCC,VCC};
-				next_pos = {VCC,VCC,VCC,VCC,VCC,GND};
-				if (VCC) begin
+				next_pst = {1,1,1,1};
+				next_pos = {1,1,1,1,1,0};
+				if (1) begin
 					next_state = S1;
 				end
 			end
 			S1: begin
-				Comando = {VCC,VCC};
+				Comando = {1,1};
 				if (!PP) begin
 					next_state = S1;
 				end else if (PP) begin
@@ -64,7 +62,7 @@ module RTL_X(
 				if (Flag) begin
 					next_pos = {pos[4],pos[3],pos[2],pos[1],pos[0],pos[5]};
 				end
-				Comando = {GND,GND};
+				Comando = {0,0};
 				if (!PP) begin
 					next_state = S1;
 				end else if (PP&&FF_L) begin
@@ -77,7 +75,7 @@ module RTL_X(
 				if (Flag) begin
 					next_pos = {pos[4],pos[3],pos[2],pos[1],pos[0],pos[5]};
 				end
-				Comando = {GND,VCC};
+				Comando = {0,1};
 				if (FF_L) begin
 					next_state = S2;
 				end else if (!FF_L) begin

@@ -52,7 +52,7 @@ public class HdlToSVTest {
     }
 
     @Test
-    public void test_bad_syntax_RTL_tick_led_bad() {
+    public void test_RTL_tick_led_bad() {
         try {
 
             HdlToSV.transpile_hdl_to_sv(

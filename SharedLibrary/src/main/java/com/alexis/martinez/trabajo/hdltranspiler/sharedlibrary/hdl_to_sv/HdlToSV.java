@@ -7,7 +7,8 @@ package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl.HDLLexer;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl.HDLParser;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.control.ExampleGenerator;
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.operations.TreeExport;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.operations.TreeHelper;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.operations.Visitor;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.CustomTreeEquivalent;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.InternalNode;
 import java.util.Arrays;
@@ -64,11 +65,16 @@ public class HdlToSV {
         tree = parser.program();
 
         InternalNode editableTree = CustomTreeEquivalent.parse(tree, parser);
-
+/*
         TreeExport translated_tree = new TreeExport(editableTree);
         translated_tree.build();
 
         return translated_tree.toString();
+  */        TreeHelper helper = new TreeHelper(tree, parser);
+        
+        var v = new Visitor(parser);
+        String visit = v.visit(tree);
+        return visit;
     }
 
     /**

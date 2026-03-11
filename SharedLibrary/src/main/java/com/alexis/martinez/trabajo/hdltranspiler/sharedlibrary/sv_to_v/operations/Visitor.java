@@ -9,6 +9,7 @@ import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.sv.SystemVerilogP
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.sv.SystemVerilogVisitor;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import org.antlr.v4.runtime.Parser;
 
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -28,17 +29,17 @@ public class Visitor extends SystemVerilogBaseVisitor<String> {
     private final TreeHelper helper;
     private String selector_data;
     private Parser parser;
-    private final ArrayList<String> inputs;
+    private final LinkedHashSet<String> inputs_and_reg;
 
     public Visitor(Parser parser, TreeHelper helper) {
         this.helper = helper;
         this.parser = parser;
-        this.inputs = new ArrayList<String>();
+        this.inputs_and_reg = new LinkedHashSet<String>();
     }
 
     @Override
     public String visitProgram(SystemVerilogParser.ProgramContext program_ctx) {
-        inputs.clear();
+        inputs_and_reg.clear();
         if (program_ctx.getChildCount() == 3) {
             return visitModule_def((SystemVerilogParser.Module_defContext) program_ctx.getChild(0))
                     + visitProgram((SystemVerilogParser.ProgramContext) program_ctx.getChild(1));
@@ -61,7 +62,7 @@ public class Visitor extends SystemVerilogBaseVisitor<String> {
             if (port_def instanceof SystemVerilogParser.PortContext) {
                 if (helper.get_token((TerminalNode) port_def.getChild(0)).equals("input")) {
                     // get the last item of port that are the ID and save it
-                    inputs.add(helper.get_token((TerminalNode) port_def.getChild(port_def.getChildCount() - 1)));
+                    inputs_and_reg.add(helper.get_token((TerminalNode) port_def.getChild(port_def.getChildCount() - 1)));
                 }
             }
         }
@@ -151,16 +152,14 @@ public class Visitor extends SystemVerilogBaseVisitor<String> {
             o += this.visitTerminal((TerminalNode) module_block.getChild(module_block.getChildCount() - 1));
 
         } else if (helper.get_token(t).equals("always_comb")) {
-            var aux_inp = (ArrayList<String>) inputs.clone();
+            var aux_inp = (LinkedHashSet<String>) inputs_and_reg.clone();
             o += "always @(";
 
-            aux_inp.remove("VCC");
-            aux_inp.remove("GND");
             aux_inp.remove("reset");
             aux_inp.remove("clk");
 
-            o += aux_inp.get(0);
-            aux_inp.remove(0);
+            o += aux_inp.getFirst();
+            aux_inp.removeFirst();
 
             for (String input : aux_inp) {
                 o += " or " + input;
@@ -214,7 +213,7 @@ public class Visitor extends SystemVerilogBaseVisitor<String> {
         } else {
             // ID ID SEMI case
             o += "reg " + selector_data + " ";
-            o += helper.get_token((TerminalNode) module_block.getChild(1));
+            o += visitTerminal((TerminalNode) module_block.getChild(1));
             o += ";";
 
         }
@@ -298,6 +297,8 @@ public class Visitor extends SystemVerilogBaseVisitor<String> {
         if (ctx.getChild(0) instanceof SystemVerilogParser.If_block_defContext) {
             o += this.visitIf_block_def((SystemVerilogParser.If_block_defContext) ctx.getChild(0));
         } else if (ctx.getChild(0) instanceof TerminalNode) {
+
+            this.inputs_and_reg.add(this.visitTerminal((TerminalNode) ctx.getChild(0)));
             o += this.visitTerminal((TerminalNode) ctx.getChild(0));
             o += " ";
             o += this.visitTerminal((TerminalNode) ctx.getChild(1));

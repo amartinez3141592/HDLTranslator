@@ -58,8 +58,13 @@ public class PnlGridMain extends javax.swing.JPanel {
     }
 
     public void setSystemVerilogOutput(String text) {
-        this.pnl_system_verilog_output.getTextAreaOutput().setText(text);
-        this.pnl_system_verilog_output.getTextAreaOutput().setCaretPosition(0);
+        this.pnl_system_verilog_output.getTextAreaOutputSV().setText(text);
+        this.pnl_system_verilog_output.getTextAreaOutputSV().setCaretPosition(0);
+    }
+
+    public void setVerilogOutput(String text) {
+        this.pnl_system_verilog_output.getTextAreaOutputV().setText(text);
+        this.pnl_system_verilog_output.getTextAreaOutputV().setCaretPosition(0);
     }
 
     public void setRTLInput(String text) {

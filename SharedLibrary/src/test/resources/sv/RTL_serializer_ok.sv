@@ -1,13 +1,11 @@
 module parallel_to_serial(
 	input logic [2:0] parallel,
-	input logic VCC,
-	input logic GND,
 	input logic clk,
 	input logic reset,
 	output logic serial
 );
-	logic [2:0] next_aux;
 	logic [2:0] aux;
+	logic [2:0] next_aux;
 	typedef enum logic [2:0] {
 		S0 = 3'b100,
 		S1 = 3'b010,
@@ -32,23 +30,21 @@ module parallel_to_serial(
 			S0: begin
 				next_aux={parallel[2],parallel[1],parallel[0]};
 				serial=aux[0];
-				if (VCC) begin next_state = S1;
+				if (1) begin next_state = S1;
 				end
 			end
 			S1: begin
 				next_aux={parallel[0],parallel[2],parallel[1]};
 				serial=aux[0];
-				if (VCC) begin next_state = S2;
+				if (1) begin next_state = S2;
 				end
 			end
 			S2: begin
 				next_aux={parallel[1],parallel[0],parallel[2]};
 				serial=aux[0];
-				if (VCC) begin next_state = S0;
+				if (1) begin next_state = S0;
 				end
 			end
 		endcase
 	end
-
 endmodule
-

@@ -1,17 +1,16 @@
 MODULE: empty;
-INPUT: a[3], VCC, GND, clk, reset;
+INPUT: a[3], clk, reset;
 OUTPUT: led[3];
-        MEMORY: isActivated;
 	SEQUENCE(3):
 		STEP(0):
-		=> ( VCC ) / ( 1 );
+		=> ( 1 ) / ( 1 );
 		STEP(1):
 		    led = {a[0],a[2],a[1]};
-		=> ( VCC ) / ( 2 );
+		=> ( 1 ) / ( 2 );
 
 		STEP(2):
 		    led = {a[1],a[0],a[2]};
-		=> ( VCC ) / ( 0 );
+		=> ( 1 ) / ( 0 );
 
 	END_SEQUENCE;
 	CONTROL RESET (0):

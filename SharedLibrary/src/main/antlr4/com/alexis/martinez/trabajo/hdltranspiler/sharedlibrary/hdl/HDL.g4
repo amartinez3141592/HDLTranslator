@@ -19,7 +19,7 @@ module_def
     ;
 
 body_def
-    : memory_def SEMI sequence_def SEMI control_reset_def SEMI
+    : (memory_def SEMI)? sequence_def SEMI control_reset_def SEMI
     ;
 
 control_reset_def
@@ -71,15 +71,15 @@ step_def
 
 assign_output
     : ID EQ ( expr |
-    assignation_input_list )
+    assignation_conditions )
     ;
 
-assignation_input_list
-    : LCURLY input_list RCURLY
+assignation_conditions
+    : LCURLY conditions RCURLY
     ;
 
 assign_memory
-    : ID (CONDITIONED_BY expr)? MEM_ASSIGN (expr | assignation_input_list)
+    : ID (CONDITIONED_BY expr)? MEM_ASSIGN (expr | assignation_conditions)
     ;
 
 conditions
@@ -90,27 +90,23 @@ goto
     ;
 
 expr
-    : const_expr
-    | variable_def
-    | module_call
-    | (NOT expr)
-    | ((variable_def| module_call) OR expr)
-    | ((variable_def| module_call) AND expr)
-    | ((variable_def| module_call) EQUALS expr)
-    | ((variable_def| module_call) NOT_EQUALS expr)
-    | (LPAREN expr RPAREN)
-    | ((variable_def| module_call) OR LPAREN expr RPAREN)
-    | ((variable_def| module_call) AND LPAREN expr RPAREN)
-    | ((variable_def| module_call) EQUALS LPAREN expr RPAREN)
-    | ((variable_def| module_call) NOT_EQUALS LPAREN expr RPAREN)
+    :   const_expr
+    |   variable_def
+    |   module_call
+    |   (NOT expr)
+    |   left=expr OR right=expr
+    |   left=expr AND right=expr
+    |   left=expr EQUALS right=expr
+    |   left=expr NOT_EQUALS right=expr
+    |   (LPAREN expr RPAREN)
     ;
 
 
 // 2'b01 or 3'hAF
 const_expr
     : NUMBER
-    CONST_DEF_SIGN
-    ID
+    (CONST_DEF_SIGN
+    ID)?
     ;
 
 call_input_list : expr (COMMA call_input_list ) ?;

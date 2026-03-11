@@ -5,6 +5,7 @@
 package com.alexis.martinez.trabajo.hdltranspiler.ui;
 
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.HdlToSV;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.sv_to_v.SystemVerilogToVerilog;
 import com.alexis.martinez.trabajo.hdltranspiler.ui.file.FileManager;
 
 import java.io.File;
@@ -73,7 +74,7 @@ public class TranspilerUI extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(745, 545));
         setPreferredSize(new java.awt.Dimension(745, 545));
 
-        btn_convert.setText("Convert to SystemVerilog");
+        btn_convert.setText("Convert");
         btn_convert.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_convertActionPerformed(evt);
@@ -163,10 +164,16 @@ public class TranspilerUI extends javax.swing.JFrame {
 
         this.pnlGridMain1.setConsoleOutput("");
         this.pnlGridMain1.setSystemVerilogOutput("");
+        this.pnlGridMain1.setVerilogOutput("");
         try {
             String input = this.pnlGridMain1.getInputRTLValue();
             String transpile_out = HdlToSV.transpile_hdl_to_sv(input);
             this.pnlGridMain1.setSystemVerilogOutput(transpile_out);
+
+            String transpile_out_to_to_verilog = SystemVerilogToVerilog.transpile_sv_to_v(transpile_out);
+            
+            this.pnlGridMain1.setVerilogOutput(transpile_out_to_to_verilog);
+
         } catch (Exception ex) {
             Logger.getLogger(TranspilerUI.class.getName()).log(Level.SEVERE, null, ex);
         }

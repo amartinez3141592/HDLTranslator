@@ -27,9 +27,9 @@
     <Property name="rows" type="int" value="1"/>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="btn_show_graph">
+    <Component class="javax.swing.JButton" name="btn_show_graph_hdl_sv">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show graph"/>
+        <Property name="text" type="java.lang.String" value="Show graph hdl to sv"/>
         <Property name="toolTipText" type="java.lang.String" value=""/>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[32314, 413431]"/>
@@ -39,7 +39,15 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_show_graphActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_show_graph_hdl_svActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btn_show_graph_sv_to_v">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Show graph sv to v"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_show_graph_sv_to_vActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

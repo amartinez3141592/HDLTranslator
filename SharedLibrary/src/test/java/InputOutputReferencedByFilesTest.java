@@ -25,12 +25,15 @@ public class InputOutputReferencedByFilesTest {
             String out = HdlToSV.toStringTreeForLookingForSyntaxErrors();
 
             Assertions.assertTrue(!out.contains("missing"));
+            Assertions.assertTrue(!out.contains("mismatched"));
 
             String diff = StringUtils.difference(
                     system_verilog_code,
                     output
             );
-            Logger.getLogger(InputOutputReferencedByFilesTest.class.getName()).log(Level.SEVERE, diff);
+            if (!diff.equals("")) {
+                Logger.getLogger(InputOutputReferencedByFilesTest.class.getName()).log(Level.SEVERE, diff);
+            }
 
             Assertions.assertTrue(system_verilog_code.equals(output));
 
@@ -48,16 +51,17 @@ public class InputOutputReferencedByFilesTest {
             );
             String out = SystemVerilogToVerilog.toStringTreeForLookingForSyntaxErrors();
 
-            // SystemVerilogToVerilog.visualize();
-
+            SystemVerilogToVerilog.visualize();
             Assertions.assertTrue(!out.contains("missing"));
-            
+            Assertions.assertTrue(!out.contains("mismatched"));
+
             String diff = StringUtils.difference(
                     verilog_code,
                     output
             );
-
-            Logger.getLogger(InputOutputReferencedByFilesTest.class.getName()).log(Level.SEVERE, diff);
+            if (!diff.equals("")) {
+                Logger.getLogger(InputOutputReferencedByFilesTest.class.getName()).log(Level.SEVERE, diff);
+            }
 
             Assertions.assertTrue(verilog_code.equals(output));
 

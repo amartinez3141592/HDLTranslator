@@ -2,17 +2,15 @@ module comparador(
 	input wire [7:0] x,
 	input wire a,
 	input wire b,
-	input wire VCC,
-	input wire GND,
 	input wire clk,
 	input wire reset,
 	output wire [7:0] z,
 	output wire out
 );
-	reg [7:0] next_A;
-	reg [1:0] next_cont;
 	reg [7:0] A;
 	reg [1:0] cont;
+	reg [7:0] next_A;
+	reg [1:0] next_cont;
 	localparam
 		S0 = 4'b1000,
 		S1 = 4'b0100,
@@ -31,7 +29,7 @@ module comparador(
 			state <= next_state;
 		end
 	end
-	always @(x or a or b) begin
+	always @(x or a or b or A or cont or state) begin
 		next_state = state;
 		next_A = A;
 		next_cont = cont;
@@ -58,7 +56,7 @@ module comparador(
 					next_A = x;
 				end
 				next_cont = 2'b00;
-				if (VCC) begin
+				if (1) begin
 					next_state = S3;
 				end
 			end

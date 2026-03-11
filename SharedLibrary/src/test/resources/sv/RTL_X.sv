@@ -1,20 +1,18 @@
 module RTL_X(
 	input logic PP,
 	input logic FF_L,
-	input logic VCC,
-	input logic GND,
 	input logic clk,
 	input logic reset,
 	output logic Pista,
 	output logic [5:0] Posicion,
 	output logic [1:0] Comando
 );
-	logic [5:0] next_pos;
-	logic [3:0] next_pst;
-	logic next_Flag;
 	logic [5:0] pos;
 	logic [3:0] pst;
 	logic Flag;
+	logic [5:0] next_pos;
+	logic [3:0] next_pst;
+	logic next_Flag;
 	typedef enum logic [3:0] {
 		S0 = 4'b1000,
 		S1 = 4'b0100,
@@ -47,13 +45,13 @@ module RTL_X(
 		Comando = 2'b00;
 		case(state)
 			S0: begin
-				next_pst={VCC,VCC,VCC,VCC};
-				next_pos={VCC,VCC,VCC,VCC,VCC,GND};
-				if (VCC) begin next_state = S1;
+				next_pst={1,1,1,1};
+				next_pos={1,1,1,1,1,0};
+				if (1) begin next_state = S1;
 				end
 			end
 			S1: begin
-				Comando={VCC,VCC};
+				Comando={1,1};
 				if (!PP) begin next_state = S1;
 				end else if (PP) begin next_state = S2;
 				end
@@ -62,7 +60,7 @@ module RTL_X(
 				if(Flag) begin
 					next_pos={pos[4],pos[3],pos[2],pos[1],pos[0],pos[5]};
 				end
-				Comando={GND,GND};
+				Comando={0,0};
 				if (!PP) begin next_state = S1;
 				end else if (PP&&FF_L) begin next_state = S2;
 				end else if (PP&&!FF_L) begin next_state = S3;
@@ -72,13 +70,11 @@ module RTL_X(
 				if(Flag) begin
 					next_pos={pos[4],pos[3],pos[2],pos[1],pos[0],pos[5]};
 				end
-				Comando={GND,VCC};
+				Comando={0,1};
 				if (FF_L) begin next_state = S2;
 				end else if (!FF_L) begin next_state = S3;
 				end
 			end
 		endcase
 	end
-
 endmodule
-

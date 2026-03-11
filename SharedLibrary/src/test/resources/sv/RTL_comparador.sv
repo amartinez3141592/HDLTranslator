@@ -2,17 +2,15 @@ module comparador(
 	input logic [7:0] x,
 	input logic a,
 	input logic b,
-	input logic VCC,
-	input logic GND,
 	input logic clk,
 	input logic reset,
 	output logic [7:0] z,
 	output logic out
 );
-	logic [7:0] next_A;
-	logic [1:0] next_cont;
 	logic [7:0] A;
 	logic [1:0] cont;
+	logic [7:0] next_A;
+	logic [1:0] next_cont;
 	typedef enum logic [3:0] {
 		S0 = 4'b1000,
 		S1 = 4'b0100,
@@ -55,7 +53,7 @@ module comparador(
 					next_A=x;
 				end
 				next_cont=2'b00;
-				if (VCC) begin next_state = S3;
+				if (1) begin next_state = S3;
 				end
 			end
 			S3: begin
@@ -68,6 +66,4 @@ module comparador(
 			end
 		endcase
 	end
-
 endmodule
-

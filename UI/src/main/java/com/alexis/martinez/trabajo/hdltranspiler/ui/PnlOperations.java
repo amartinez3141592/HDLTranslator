@@ -6,6 +6,7 @@ package com.alexis.martinez.trabajo.hdltranspiler.ui;
 
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.HdlTranspiler;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.HdlToSV;
+import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.sv_to_v.SystemVerilogToVerilog;
 
 /**
  *
@@ -29,30 +30,44 @@ public class PnlOperations extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btn_show_graph = new javax.swing.JButton();
+        btn_show_graph_hdl_sv = new javax.swing.JButton();
+        btn_show_graph_sv_to_v = new javax.swing.JButton();
 
         setMaximumSize(new java.awt.Dimension(32767, 40));
         setPreferredSize(new java.awt.Dimension(105, 68));
         setLayout(new java.awt.GridLayout(1, 0));
 
-        btn_show_graph.setText("Show graph");
-        btn_show_graph.setToolTipText("");
-        btn_show_graph.setMaximumSize(new java.awt.Dimension(32314, 413431));
-        btn_show_graph.setMinimumSize(new java.awt.Dimension(105, 10));
-        btn_show_graph.addActionListener(new java.awt.event.ActionListener() {
+        btn_show_graph_hdl_sv.setText("Show graph hdl to sv");
+        btn_show_graph_hdl_sv.setToolTipText("");
+        btn_show_graph_hdl_sv.setMaximumSize(new java.awt.Dimension(32314, 413431));
+        btn_show_graph_hdl_sv.setMinimumSize(new java.awt.Dimension(105, 10));
+        btn_show_graph_hdl_sv.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_show_graphActionPerformed(evt);
+                btn_show_graph_hdl_svActionPerformed(evt);
             }
         });
-        add(btn_show_graph);
+        add(btn_show_graph_hdl_sv);
+
+        btn_show_graph_sv_to_v.setText("Show graph sv to v");
+        btn_show_graph_sv_to_v.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_show_graph_sv_to_vActionPerformed(evt);
+            }
+        });
+        add(btn_show_graph_sv_to_v);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_show_graphActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_show_graphActionPerformed
+    private void btn_show_graph_hdl_svActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_show_graph_hdl_svActionPerformed
         HdlToSV.visualize();
-    }//GEN-LAST:event_btn_show_graphActionPerformed
+    }//GEN-LAST:event_btn_show_graph_hdl_svActionPerformed
+
+    private void btn_show_graph_sv_to_vActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_show_graph_sv_to_vActionPerformed
+        SystemVerilogToVerilog.visualize();
+    }//GEN-LAST:event_btn_show_graph_sv_to_vActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_show_graph;
+    private javax.swing.JButton btn_show_graph_hdl_sv;
+    private javax.swing.JButton btn_show_graph_sv_to_v;
     // End of variables declaration//GEN-END:variables
 }

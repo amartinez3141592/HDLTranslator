@@ -71,7 +71,7 @@ expr:   TILDA expr // bitwise_not
     |   LCURLY (expr COMMA)+ expr RCURLY
     |   NUMBER CONST_DEF_SIGN ID
     |   ID SELECTOR NUMBER END_SELECTOR
-    |   ID LPAREN (expr COMMA)+ expr RPAREN
+    |   ID LPAREN (expr COMMA)? expr RPAREN
     |   ID // variable
     |   NUMBER // literal
     ;
