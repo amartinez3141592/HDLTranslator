@@ -18,7 +18,7 @@ module comparador(
 		S3 = 4'b0001;
 	reg [3:0] next_state;
 	reg [3:0] state;
-	always @(( posedge clk or negedge reset )) begin
+	always @(posedge clk or negedge reset) begin
 		if (!(reset)) begin
 			A <= 8'b00000000;
 			cont <= 2'b00;

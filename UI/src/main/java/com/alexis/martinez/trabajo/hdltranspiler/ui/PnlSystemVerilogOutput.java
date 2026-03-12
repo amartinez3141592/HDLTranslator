@@ -70,8 +70,13 @@ public class PnlSystemVerilogOutput extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_copyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_copyActionPerformed
-
-        StringSelection stringSelection = new StringSelection(this.txt_area_output_system_verilog.getText());
+        StringSelection stringSelection = new StringSelection("");
+        if (jTabbedOutput.getSelectedIndex() == 0) {
+                stringSelection = new StringSelection(this.txt_area_output_system_verilog.getText());
+        } else if (jTabbedOutput.getSelectedIndex() == 1) {
+                stringSelection = new StringSelection(this.txt_area_output_converted_to_verilog.getText());
+        }
+        
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(stringSelection, null);
     }//GEN-LAST:event_btn_copyActionPerformed
