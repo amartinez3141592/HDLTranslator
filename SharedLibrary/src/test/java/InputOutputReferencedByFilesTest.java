@@ -51,7 +51,7 @@ public class InputOutputReferencedByFilesTest {
             );
             String out = SystemVerilogToVerilog.toStringTreeForLookingForSyntaxErrors();
 
-            SystemVerilogToVerilog.visualize();
+//            SystemVerilogToVerilog.visualize();
             Assertions.assertTrue(!out.contains("missing"));
             Assertions.assertTrue(!out.contains("mismatched"));
 

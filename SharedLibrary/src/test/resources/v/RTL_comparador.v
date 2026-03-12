@@ -18,8 +18,8 @@ module comparador(
 		S3 = 4'b0001;
 	reg [3:0] next_state;
 	reg [3:0] state;
-	always @(posedge clk or negedge reset) begin
-		if (!reset) begin
+	always @(( posedge clk or negedge reset )) begin
+		if (!(reset)) begin
 			A <= 8'b00000000;
 			cont <= 2'b00;
 			state <= S0;
@@ -40,14 +40,14 @@ module comparador(
 				next_A = x;
 				if (a) begin
 					next_state = S1;
-				end else if (!a) begin
+				end else if (!(a)) begin
 					next_state = S0;
 				end
 			end
 			S1: begin
 				if (b) begin
 					next_state = S2;
-				end else if (!b) begin
+				end else if (!(b)) begin
 					next_state = S1;
 				end
 			end
@@ -64,9 +64,9 @@ module comparador(
 				next_cont = INC(cont);
 				out = 1'b1;
 				z = A;
-				if (cont==2'b11) begin
+				if ((cont==2'b11)) begin
 					next_state = S0;
-				end else if (!(cont==2'b11)) begin
+				end else if (!((cont==2'b11))) begin
 					next_state = S3;
 				end
 			end

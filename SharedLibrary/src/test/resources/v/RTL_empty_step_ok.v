@@ -10,8 +10,8 @@ module empty(
 		S2 = 3'b001;
 	reg [2:0] next_state;
 	reg [2:0] state;
-	always @(posedge clk or negedge reset) begin
-		if (!reset) begin
+	always @(( posedge clk or negedge reset )) begin
+		if (!(reset)) begin
 			state <= S0;
 		end else begin
 			state <= next_state;

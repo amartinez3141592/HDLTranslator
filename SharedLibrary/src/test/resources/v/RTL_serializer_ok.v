@@ -12,8 +12,8 @@ module parallel_to_serial(
 		S2 = 3'b001;
 	reg [2:0] next_state;
 	reg [2:0] state;
-	always @(posedge clk or negedge reset) begin
-		if (!reset) begin
+	always @(( posedge clk or negedge reset )) begin
+		if (!(reset)) begin
 			aux <= 3'b000;
 			state <= S0;
 		end else begin

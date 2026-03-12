@@ -8,8 +8,8 @@ module tick_light(
 		S1 = 2'b01;
 	reg [1:0] next_state;
 	reg [1:0] state;
-	always @(posedge clk or negedge reset) begin
-		if (!reset) begin
+	always @(( posedge clk or negedge reset )) begin
+		if (!(reset)) begin
 			state <= S0;
 		end else begin
 			state <= next_state;

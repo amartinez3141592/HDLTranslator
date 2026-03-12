@@ -21,8 +21,8 @@ module RTL_X(
 	} state_t;
 	state_t next_state;
 	state_t state;
-	always_ff @(posedge clk or negedge reset) begin
-		if (!reset) begin
+	always_ff @((posedge clk or negedge reset)) begin
+		if (!(reset)) begin
 			pos <= 6'b000000;
 			pst <= 4'b0000;
 			Flag <= 1'b0;
@@ -41,7 +41,7 @@ module RTL_X(
 		next_Flag = Flag;
 		Posicion=pos;
 		Pista=pst;
-		Flag=!Flag;
+		Flag=!(Flag);
 		Comando = 2'b00;
 		case(state)
 			S0: begin
@@ -52,7 +52,7 @@ module RTL_X(
 			end
 			S1: begin
 				Comando={1,1};
-				if (!PP) begin next_state = S1;
+				if (!(PP)) begin next_state = S1;
 				end else if (PP) begin next_state = S2;
 				end
 			end
@@ -61,9 +61,9 @@ module RTL_X(
 					next_pos={pos[4],pos[3],pos[2],pos[1],pos[0],pos[5]};
 				end
 				Comando={0,0};
-				if (!PP) begin next_state = S1;
-				end else if (PP&&FF_L) begin next_state = S2;
-				end else if (PP&&!FF_L) begin next_state = S3;
+				if (!(PP)) begin next_state = S1;
+				end else if ((PP&&FF_L)) begin next_state = S2;
+				end else if ((PP&&!(FF_L))) begin next_state = S3;
 				end
 			end
 			S3: begin
@@ -72,7 +72,7 @@ module RTL_X(
 				end
 				Comando={0,1};
 				if (FF_L) begin next_state = S2;
-				end else if (!FF_L) begin next_state = S3;
+				end else if (!(FF_L)) begin next_state = S3;
 				end
 			end
 		endcase

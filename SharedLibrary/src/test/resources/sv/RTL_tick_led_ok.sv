@@ -9,8 +9,8 @@ module tick_light(
 	} state_t;
 	state_t next_state;
 	state_t state;
-	always_ff @(posedge clk or negedge reset) begin
-		if (!reset) begin
+	always_ff @((posedge clk or negedge reset)) begin
+		if (!(reset)) begin
 			state <= S0;
 		end else begin
 			state <= next_state;

@@ -33,7 +33,7 @@ specific_case_def
 enum_state : 
     ID EQ NUMBER CONST_DEF_SIGN ID
     ;
-signal_trans : LPAREN (POSEDGE ID OR NEGEDGE ID) RPAREN;
+signal_trans : LPAREN LPAREN (POSEDGE ID OR NEGEDGE ID) RPAREN RPAREN;
 
 
 
@@ -63,11 +63,10 @@ if_async_def
 
 
 expr:   TILDA expr // bitwise_not
-    |   NOT expr // bit
-    |   LPAREN expr RPAREN
-    |   left=expr LOGIC_OR right=expr // or
-    |   left=expr LOGIC_AND right=expr // and 
-    |   left=expr LOGIC_EQUAL right=expr //expr == expr
+    |   NOT LPAREN expr RPAREN // bit
+    |   LPAREN left=expr LOGIC_OR right=expr RPAREN // or
+    |   LPAREN left=expr LOGIC_AND right=expr RPAREN // and 
+    |   LPAREN left=expr LOGIC_EQUAL right=expr RPAREN //expr == expr
     |   LCURLY (expr COMMA)+ expr RCURLY
     |   NUMBER CONST_DEF_SIGN ID
     |   ID SELECTOR NUMBER END_SELECTOR

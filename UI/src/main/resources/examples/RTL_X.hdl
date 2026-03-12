@@ -10,23 +10,23 @@ OUTPUT: Pista, Posicion[6], Comando[2];
 		
 		STEP(1):
 		    Comando = {1, 1};
-		=> ( !PP, PP ) / ( 1, 2 );
+		=> ( !(PP), PP ) / ( 1, 2 );
 
 		STEP(2):
 		    pos * Flag <= {pos[4], pos[3], pos[2], pos[1], pos[0], pos[5]};
 		    Comando = {0, 0};
-		=> ( !PP, PP && FF_L , PP && !FF_L ) / ( 1, 2, 3 );
+		=> ( !(PP), (PP && FF_L) , (PP && !(FF_L)) ) / ( 1, 2, 3 );
 
 
 		STEP(3):
 		    pos * Flag <= {pos[4], pos[3], pos[2], pos[1], pos[0], pos[5]};
 		    Comando = {0, 1};
-		=> ( FF_L , !FF_L ) / (2, 3 );
+		=> ( FF_L , !(FF_L) ) / (2, 3 );
 
 	END_SEQUENCE;
 	CONTROL RESET (0):
             Posicion = pos;
             Pista = pst;
-            Flag <= !Flag;
+            Flag <= !(Flag);
 	END_CONTROL;
 END_MODULE;

@@ -24,8 +24,8 @@ body_def
 
 control_reset_def
     : CONTROL_RESET LPAREN NUMBER RPAREN DESCRIBE
-           step_def?
-      END_CONTROL
+    step_def?
+    END_CONTROL
     ;
 
 variable_def
@@ -50,7 +50,7 @@ memory_def
 
 sequence_def
     : SEQUENCE LPAREN NUMBER RPAREN DESCRIBE
-        steps_def?
+    steps_def?
     END_SEQUENCE
     //    | SEQUENCE DESCRIBE END_SEQUENCE
     ;
@@ -93,12 +93,11 @@ expr
     :   const_expr
     |   variable_def
     |   module_call
-    |   (NOT expr)
-    |   left=expr OR right=expr
-    |   left=expr AND right=expr
-    |   left=expr EQUALS right=expr
-    |   left=expr NOT_EQUALS right=expr
-    |   (LPAREN expr RPAREN)
+    |   (NOT LPAREN expr RPAREN)
+    |   LPAREN left=expr OR right=expr RPAREN 
+    |   LPAREN left=expr AND right=expr RPAREN
+    |   LPAREN left=expr EQUALS right=expr  RPAREN
+    |   LPAREN left=expr NOT_EQUALS right=expr RPAREN
     ;
 
 

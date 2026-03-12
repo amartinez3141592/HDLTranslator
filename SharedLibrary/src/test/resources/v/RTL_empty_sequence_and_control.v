@@ -4,8 +4,8 @@ module empty(
 	input wire reset,
 	output wire [2:0] led
 );
-	always @(posedge clk or negedge reset) begin
-		if (!reset) begin
+	always @(( posedge clk or negedge reset )) begin
+		if (!(reset)) begin
 		end else begin
 		end
 	end

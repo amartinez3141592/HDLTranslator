@@ -4,8 +4,8 @@ module empty(
 	input logic reset,
 	output logic [2:0] led
 );
-	always_ff @(posedge clk or negedge reset) begin
-		if (!reset) begin
+	always_ff @((posedge clk or negedge reset)) begin
+		if (!(reset)) begin
 		end else begin
 		end
 	end

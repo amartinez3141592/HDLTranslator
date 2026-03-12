@@ -5,11 +5,11 @@ OUTPUT: z[8], out;
 	SEQUENCE(4):
 		STEP(0):
 		    A <= x;
-		=> ( a, !a ) / ( 1, 0);
+		=> ( a, !(a) ) / ( 1, 0);
 	
 		STEP(1):
 		 
-                => ( b, !b ) / ( 2, 1 );
+                => ( b, !(b) ) / ( 2, 1 );
 	
 		STEP(2):
                     A * mayor <=x;
@@ -19,8 +19,8 @@ OUTPUT: z[8], out;
 		STEP(3):
 			cont <= INC(cont);
 			out = 1'b1;
-			z=A;	
-                => (cont == 2'b11, ! (cont == 2'b11)) / ( 0, 3 );
+			z = A;	
+                => ((cont == 2'b11), !((cont == 2'b11))) / ( 0, 3 );
 
 	END_SEQUENCE;
 	CONTROL RESET (0):
