@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.alexis.martinez.trabajo</groupId>
         <artifactId>HDLTranspiler</artifactId>
-        <version>3.2.1</version>
+        <version>4.0.1</version>
     </parent>
     <artifactId>UI</artifactId>
     <packaging>jar</packaging>
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.alexis.martinez.trabajo</groupId>
             <artifactId>SharedLibrary</artifactId>
-            <version>4.0.0</version>
+            <version>4.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

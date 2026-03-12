@@ -20,7 +20,7 @@ module RTL_X(
 		S3 = 4'b0001;
 	reg [3:0] next_state;
 	reg [3:0] state;
-	always @(( posedge clk or negedge reset )) begin
+	always @(posedge clk or negedge reset) begin
 		if (!(reset)) begin
 			pos <= 6'b000000;
 			pst <= 4'b0000;

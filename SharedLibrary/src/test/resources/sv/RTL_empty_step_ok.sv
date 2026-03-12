@@ -11,7 +11,7 @@ module empty(
 	} state_t;
 	state_t next_state;
 	state_t state;
-	always_ff @((posedge clk or negedge reset)) begin
+	always_ff @( posedge clk or negedge reset ) begin
 		if (!(reset)) begin
 			state <= S0;
 		end else begin

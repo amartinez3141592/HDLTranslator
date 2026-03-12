@@ -33,7 +33,7 @@ specific_case_def
 enum_state : 
     ID EQ NUMBER CONST_DEF_SIGN ID
     ;
-signal_trans : LPAREN LPAREN (POSEDGE ID OR NEGEDGE ID) RPAREN RPAREN;
+signal_trans : LPAREN (POSEDGE ID OR NEGEDGE ID) RPAREN;
 
 
 

@@ -21,7 +21,7 @@ module RTL_X(
 	} state_t;
 	state_t next_state;
 	state_t state;
-	always_ff @((posedge clk or negedge reset)) begin
+	always_ff @( posedge clk or negedge reset ) begin
 		if (!(reset)) begin
 			pos <= 6'b000000;
 			pst <= 4'b0000;

@@ -19,7 +19,7 @@ module comparador(
 	} state_t;
 	state_t next_state;
 	state_t state;
-	always_ff @((posedge clk or negedge reset)) begin
+	always_ff @( posedge clk or negedge reset ) begin
 		if (!(reset)) begin
 			A <= 8'b00000000;
 			cont <= 2'b00;

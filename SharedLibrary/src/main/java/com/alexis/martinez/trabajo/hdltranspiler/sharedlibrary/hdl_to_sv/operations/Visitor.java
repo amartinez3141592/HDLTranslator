@@ -467,7 +467,7 @@ public class Visitor implements HDLVisitor {
     public String create_always_ff(HDLParser.Sequence_defContext sequence_def, int n_steps) {
         String o = "";
 
-        o += "always_ff @((posedge clk or negedge reset)) begin\n";
+        o += "always_ff @( posedge clk or negedge reset ) begin\n";
         o += "\tif (!(reset)) begin\n";
         if (memory_def_list != null) {
 
