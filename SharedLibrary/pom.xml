@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.alexis.martinez.trabajo</groupId>
         <artifactId>HDLTranspiler</artifactId>
-        <version>4.0.1</version>
+        <version>4.1.0</version>
     </parent>
     <groupId>com.alexis.martinez.trabajo</groupId>
     <artifactId>SharedLibrary</artifactId>
