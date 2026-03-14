@@ -1,7 +1,7 @@
 module tick_light(
 	input wire clk,
 	input wire reset,
-	output wire red_led
+	output reg red_led
 );
 	reg value_led;
 	reg next_value_led;
@@ -12,7 +12,7 @@ module tick_light(
 			value_led <= next_value_led;
 		end
 	end
-	always @(value_led) begin
+	always @(*) begin
 		red_led = value_led;
 		next_value_led = !(value_led);
 	end

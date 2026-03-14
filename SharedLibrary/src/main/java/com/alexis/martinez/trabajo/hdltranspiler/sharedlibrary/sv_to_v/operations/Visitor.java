@@ -96,7 +96,11 @@ public class Visitor extends SystemVerilogBaseVisitor<String> {
     public String visitPort(SystemVerilogParser.PortContext port) {
         String o = "";
         o += visitTerminal((TerminalNode) port.getChild(0));
-        o += " wire ";
+        if (visitTerminal((TerminalNode) port.getChild(0)).equals("input")) {
+            o += " wire ";
+        } else if (visitTerminal((TerminalNode) port.getChild(0)).equals("output")) {
+            o += " reg ";
+        }
         if (port.getChildCount() == 3) {
             o += visitTerminal((TerminalNode) port.getChild(2));
 
@@ -152,23 +156,7 @@ public class Visitor extends SystemVerilogBaseVisitor<String> {
             o += this.visitTerminal((TerminalNode) module_block.getChild(module_block.getChildCount() - 1));
 
         } else if (helper.get_token(t).equals("always_comb")) {
-            var aux_inp = (LinkedHashSet<String>) inputs_and_reg.clone();
-            o += "always @(";
-
-            aux_inp.remove("reset");
-            aux_inp.remove("clk");
-
-            if(aux_inp.size() != 0) {
-                o += aux_inp.getFirst();
-                aux_inp.removeFirst();
-            } else {
-                   o+= "*";
-            }
-
-            for (String input : aux_inp) {
-                o += " or " + input;
-            }
-
+            o += "always @(*";
             o += ") ";
             o += "begin\n";
 

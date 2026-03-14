@@ -23,6 +23,7 @@ public class ExampleGenerator {
         "RTL_empty_sequence_and_control.hdl",
         "RTL_serializer.hdl",
         "RTL_tick_led.hdl",
+        "RTL_tick_led_control.hdl",
     };
     
     public void load() {

@@ -5,19 +5,17 @@
 package com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.operations;
 
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl.HDLParser;
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl.HDLParser.Sequence_defContext;
+
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl.HDLVisitor;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.CustomTreeEquivalent;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.InternalNode;
-import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.InternalNodeLinked;
+
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.Leaf;
 import com.alexis.martinez.trabajo.hdltranspiler.sharedlibrary.hdl_to_sv.tree.Node;
 import java.util.ArrayList;
 
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.antlr.v4.runtime.Parser;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -214,7 +212,7 @@ public class Visitor implements HDLVisitor {
                 visitTerminal((TerminalNode) sequence_def.getChild(2))
         );
 
-        String aux = create_type_def_state(sequence_def, n_steps);
+        String aux = create_type_def_step(sequence_def, n_steps);
 
         if (!aux.equals("")) {
             o += aux;
@@ -334,7 +332,10 @@ public class Visitor implements HDLVisitor {
     public String create_always_comb(HDLParser.Sequence_defContext sequence_def, int n_steps) {
         String out = "";
         out += "always_comb begin \n";
-        
+        if (n_steps > 0) {
+            // define next value as actual value all variable_def on memory
+            out += "\tnext_step = step;\n";
+        }
         ArrayList<String> control_variables_def = new ArrayList();
 
         // set default output and memory assignation on control reset and save 
@@ -358,6 +359,16 @@ public class Visitor implements HDLVisitor {
 
         }
 
+        // if there is no default memory assignation set to the actual value
+        if (memory_def_list != null) {
+
+            for (InternalNode node : this.memory_def_list.getAllDescendencyByDescription("variable_def")) {
+                String var_name = node.children.get(0).description;
+                if (!control_variables_def.contains(var_name)) {
+                    out += "\tnext_" + var_name + " = " + var_name + ";\n";
+                }
+            }
+        }
         // set default output and memory that is not on control reset to 0
         for (InternalNode node : this.output_def_list.getAllDescendencyByDescription("variable_def")) {
             String aux_str_binary = "";
@@ -381,7 +392,7 @@ public class Visitor implements HDLVisitor {
         if (n_steps > 0) {
             InternalNode steps_ref = (InternalNode) this.sequence_def.getDescendencyByDescription("steps_def");
             // state changes
-            out += "\tcase(state)\n";
+            out += "\tcase(step)\n";
 
             for (Node child : steps_ref.getAllDescendencyByDescription("assign_memory")) {
                 Leaf memory_affected = (Leaf) ((InternalNode) child).children.get(0);
@@ -437,12 +448,12 @@ public class Visitor implements HDLVisitor {
                 step_transition.children.add(new Leaf("\t\t\tif ("));
 
                 step_transition.children.add(conditions.get(0).getChildrenByDescription("expr").clone());
-                step_transition.children.add(new Leaf(") begin next_state = S" + ((InternalNode) goto_def.get(0)).children.get(0).description + ";\n"));
+                step_transition.children.add(new Leaf(") begin next_step = S" + ((InternalNode) goto_def.get(0)).children.get(0).description + ";\n"));
 
                 for (int i = 1; i < conditions.size(); i++) {
                     step_transition.children.add(new Leaf("\t\t\tend else if ("));
                     step_transition.children.add(conditions.get(i).getChildrenByDescription("expr").clone());
-                    step_transition.children.add(new Leaf(") begin next_state = S" + ((InternalNode) goto_def.get(i)).children.get(0).description + ";\n"));
+                    step_transition.children.add(new Leaf(") begin next_step = S" + ((InternalNode) goto_def.get(i)).children.get(0).description + ";\n"));
 
                 }
                 step_transition.children.add(new Leaf("\t\t\tend\n"));
@@ -483,7 +494,7 @@ public class Visitor implements HDLVisitor {
             }
         }
         if (n_steps > 0) {
-            o += "\t\tstate <= S0;\n";
+            o += "\t\tstep <= S0;\n";
         }
 
         o += "\tend else begin\n";
@@ -496,7 +507,7 @@ public class Visitor implements HDLVisitor {
         }
 
         if (n_steps > 0) {
-            o += "\t\tstate <= next_state;\n";
+            o += "\t\tstep <= next_step;\n";
         }
 
         o += "\t" + "end\n";
@@ -506,7 +517,7 @@ public class Visitor implements HDLVisitor {
 
     }
 
-    public String create_type_def_state(
+    public String create_type_def_step(
             HDLParser.Sequence_defContext sequence_def, int n_steps) {
         String o = "";
         if (n_steps > 0) {
@@ -529,10 +540,10 @@ public class Visitor implements HDLVisitor {
 
             o += "\tS" + (n_steps - 1) + " = " + n_steps + "'b" + str_binary + "\n";
 
-            o += "} state_t;\n";
-            o += "state_t next_state;\n";
+            o += "} step_t;\n";
+            o += "step_t next_step;\n";
 
-            o += "state_t state;";
+            o += "step_t step;";
         }
         return o;
 

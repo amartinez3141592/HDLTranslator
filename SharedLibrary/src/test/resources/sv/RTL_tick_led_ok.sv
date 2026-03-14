@@ -6,27 +6,28 @@ module tick_light(
 	typedef enum logic [1:0] {
 		S0 = 2'b10,
 		S1 = 2'b01
-	} state_t;
-	state_t next_state;
-	state_t state;
+	} step_t;
+	step_t next_step;
+	step_t step;
 	always_ff @( posedge clk or negedge reset ) begin
 		if (!(reset)) begin
-			state <= S0;
+			step <= S0;
 		end else begin
-			state <= next_state;
+			step <= next_step;
 		end
 	end
 	always_comb begin 
+		next_step = step;
 		red_led = 1'b0;
-		case(state)
+		case(step)
 			S0: begin
 				red_led=1;
-				if (1) begin next_state = S1;
+				if (1) begin next_step = S1;
 				end
 			end
 			S1: begin
 				red_led=0;
-				if (1) begin next_state = S0;
+				if (1) begin next_step = S0;
 				end
 			end
 		endcase

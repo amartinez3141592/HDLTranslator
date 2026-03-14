@@ -3,7 +3,7 @@ module RTL_X(
 	input logic FF_L,
 	input logic clk,
 	input logic reset,
-	output logic Pista,
+	output logic [3:0] Pista,
 	output logic [5:0] Posicion,
 	output logic [1:0] Comando
 );
@@ -18,38 +18,41 @@ module RTL_X(
 		S1 = 4'b0100,
 		S2 = 4'b0010,
 		S3 = 4'b0001
-	} state_t;
-	state_t next_state;
-	state_t state;
+	} step_t;
+	step_t next_step;
+	step_t step;
 	always_ff @( posedge clk or negedge reset ) begin
 		if (!(reset)) begin
 			pos <= 6'b000000;
 			pst <= 4'b0000;
 			Flag <= 1'b0;
-			state <= S0;
+			step <= S0;
 		end else begin
 			pos <= next_pos;
 			pst <= next_pst;
 			Flag <= next_Flag;
-			state <= next_state;
+			step <= next_step;
 		end
 	end
 	always_comb begin 
+		next_step = step;
 		Posicion=pos;
 		Pista=pst;
 		next_Flag=!(Flag);
+		next_pos = pos;
+		next_pst = pst;
 		Comando = 2'b00;
-		case(state)
+		case(step)
 			S0: begin
 				next_pst={1,1,1,1};
 				next_pos={1,1,1,1,1,0};
-				if (1) begin next_state = S1;
+				if (1) begin next_step = S1;
 				end
 			end
 			S1: begin
 				Comando={1,1};
-				if (!(PP)) begin next_state = S1;
-				end else if (PP) begin next_state = S2;
+				if (!(PP)) begin next_step = S1;
+				end else if (PP) begin next_step = S2;
 				end
 			end
 			S2: begin
@@ -57,9 +60,9 @@ module RTL_X(
 					next_pos={pos[4],pos[3],pos[2],pos[1],pos[0],pos[5]};
 				end
 				Comando={0,0};
-				if (!(PP)) begin next_state = S1;
-				end else if ((PP&&FF_L)) begin next_state = S2;
-				end else if ((PP&&!(FF_L))) begin next_state = S3;
+				if (!(PP)) begin next_step = S1;
+				end else if ((PP&&FF_L)) begin next_step = S2;
+				end else if ((PP&&!(FF_L))) begin next_step = S3;
 				end
 			end
 			S3: begin
@@ -67,8 +70,8 @@ module RTL_X(
 					next_pos={pos[4],pos[3],pos[2],pos[1],pos[0],pos[5]};
 				end
 				Comando={0,1};
-				if (FF_L) begin next_state = S2;
-				end else if (!(FF_L)) begin next_state = S3;
+				if (FF_L) begin next_step = S2;
+				end else if (!(FF_L)) begin next_step = S3;
 				end
 			end
 		endcase

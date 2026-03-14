@@ -10,37 +10,39 @@ module parallel_to_serial(
 		S0 = 3'b100,
 		S1 = 3'b010,
 		S2 = 3'b001
-	} state_t;
-	state_t next_state;
-	state_t state;
+	} step_t;
+	step_t next_step;
+	step_t step;
 	always_ff @( posedge clk or negedge reset ) begin
 		if (!(reset)) begin
 			aux <= 3'b000;
-			state <= S0;
+			step <= S0;
 		end else begin
 			aux <= next_aux;
-			state <= next_state;
+			step <= next_step;
 		end
 	end
 	always_comb begin 
+		next_step = step;
+		next_aux = aux;
 		serial = 1'b0;
-		case(state)
+		case(step)
 			S0: begin
 				next_aux={parallel[2],parallel[1],parallel[0]};
 				serial=aux[0];
-				if (1) begin next_state = S1;
+				if (1) begin next_step = S1;
 				end
 			end
 			S1: begin
 				next_aux={parallel[0],parallel[2],parallel[1]};
 				serial=aux[0];
-				if (1) begin next_state = S2;
+				if (1) begin next_step = S2;
 				end
 			end
 			S2: begin
 				next_aux={parallel[1],parallel[0],parallel[2]};
 				serial=aux[0];
-				if (1) begin next_state = S0;
+				if (1) begin next_step = S0;
 				end
 			end
 		endcase

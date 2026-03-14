@@ -1,33 +1,34 @@
 module tick_light(
 	input wire clk,
 	input wire reset,
-	output wire red_led
+	output reg red_led
 );
 	localparam
 		S0 = 2'b10,
 		S1 = 2'b01;
-	reg [1:0] next_state;
-	reg [1:0] state;
+	reg [1:0] next_step;
+	reg [1:0] step;
 	always @(posedge clk or negedge reset) begin
 		if (!(reset)) begin
-			state <= S0;
+			step <= S0;
 		end else begin
-			state <= next_state;
+			step <= next_step;
 		end
 	end
-	always @(state) begin
+	always @(*) begin
+		next_step = step;
 		red_led = 1'b0;
-		case(state)
+		case(step)
 			S0: begin
 				red_led = 1;
 				if (1) begin
-					next_state = S1;
+					next_step = S1;
 				end
 			end
 			S1: begin
 				red_led = 0;
 				if (1) begin
-					next_state = S0;
+					next_step = S0;
 				end
 			end
 		endcase

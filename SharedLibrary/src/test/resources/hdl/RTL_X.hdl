@@ -1,6 +1,6 @@
 MODULE: RTL_X;
 INPUT: PP, FF_L, clk, reset;
-OUTPUT: Pista, Posicion[6], Comando[2];
+OUTPUT: Pista[4], Posicion[6], Comando[2];
         MEMORY: pos[6], pst[4], Flag;
 	SEQUENCE(4):
 		STEP(0):

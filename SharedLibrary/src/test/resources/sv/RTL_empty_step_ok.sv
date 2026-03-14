@@ -8,31 +8,32 @@ module empty(
 		S0 = 3'b100,
 		S1 = 3'b010,
 		S2 = 3'b001
-	} state_t;
-	state_t next_state;
-	state_t state;
+	} step_t;
+	step_t next_step;
+	step_t step;
 	always_ff @( posedge clk or negedge reset ) begin
 		if (!(reset)) begin
-			state <= S0;
+			step <= S0;
 		end else begin
-			state <= next_state;
+			step <= next_step;
 		end
 	end
 	always_comb begin 
+		next_step = step;
 		led = 3'b000;
-		case(state)
+		case(step)
 			S0: begin
-				if (1) begin next_state = S1;
+				if (1) begin next_step = S1;
 				end
 			end
 			S1: begin
 				led={a[0],a[2],a[1]};
-				if (1) begin next_state = S2;
+				if (1) begin next_step = S2;
 				end
 			end
 			S2: begin
 				led={a[1],a[0],a[2]};
-				if (1) begin next_state = S0;
+				if (1) begin next_step = S0;
 				end
 			end
 		endcase
