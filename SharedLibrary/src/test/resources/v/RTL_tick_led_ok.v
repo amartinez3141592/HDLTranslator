@@ -16,7 +16,6 @@ module tick_light(
 		end
 	end
 	always @(state) begin
-		next_state = state;
 		red_led = 1'b0;
 		case(state)
 			S0: begin

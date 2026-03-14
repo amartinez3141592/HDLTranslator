@@ -16,7 +16,7 @@ port : (INPUT LOGIC (SELECTOR NUMBER DESCRIBE NUMBER END_SELECTOR)? ID)
 
 module_body : (module_block)*;
 
-module_block : ALWAYS_FF AT signal_trans BEGIN block_body* END // sync_proc
+module_block : ALWAYS_FF AT signal_trans BEGIN block_body+ END // sync_proc
     | ALWAYS_COMB BEGIN async_body+ case_def? END // sync_proc
     | LOGIC (SELECTOR NUMBER DESCRIBE NUMBER END_SELECTOR)? ID SEMI // reg_decl
     | TYPEDEF ENUM LOGIC SELECTOR NUMBER DESCRIBE NUMBER END_SELECTOR LCURLY (enum_state COMMA)* enum_state  RCURLY ID SEMI

@@ -158,8 +158,12 @@ public class Visitor extends SystemVerilogBaseVisitor<String> {
             aux_inp.remove("reset");
             aux_inp.remove("clk");
 
-            o += aux_inp.getFirst();
-            aux_inp.removeFirst();
+            if(aux_inp.size() != 0) {
+                o += aux_inp.getFirst();
+                aux_inp.removeFirst();
+            } else {
+                   o+= "*";
+            }
 
             for (String input : aux_inp) {
                 o += " or " + input;

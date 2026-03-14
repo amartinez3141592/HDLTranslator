@@ -334,18 +334,7 @@ public class Visitor implements HDLVisitor {
     public String create_always_comb(HDLParser.Sequence_defContext sequence_def, int n_steps) {
         String out = "";
         out += "always_comb begin \n";
-
-        if (n_steps > 0) {
-            // define next value as actual value all variable_def on memory
-            out += "\tnext_state = state;\n";
-        }
-        if (memory_def_list != null) {
-
-            for (InternalNode node : this.memory_def_list.getAllDescendencyByDescription("variable_def")) {
-                String var_name = node.children.get(0).description;
-                out += "\tnext_" + var_name + " = " + var_name + ";\n";
-            }
-        }
+        
         ArrayList<String> control_variables_def = new ArrayList();
 
         // set default output and memory assignation on control reset and save 
@@ -354,8 +343,12 @@ public class Visitor implements HDLVisitor {
             InternalNode variable_def = (InternalNode) step_def.children.get(0);
 
             String var_name = variable_def.children.get(0).description;
+            if (variable_def.description.equals("assign_memory")) {
+                out += "\tnext_" + var_name + "=";
+            } else if (variable_def.description.equals("assign_output")) {
+                out += "\t" + var_name + "=";
+            }
 
-            out += "\t" + var_name + "=";
             out += variable_def.children.get(2);
 
             out += ";\n";

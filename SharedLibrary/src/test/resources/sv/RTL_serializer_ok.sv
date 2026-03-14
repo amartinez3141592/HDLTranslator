@@ -23,8 +23,6 @@ module parallel_to_serial(
 		end
 	end
 	always_comb begin 
-		next_state = state;
-		next_aux = aux;
 		serial = 1'b0;
 		case(state)
 			S0: begin

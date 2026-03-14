@@ -30,9 +30,6 @@ module comparador(
 		end
 	end
 	always @(x or a or b or A or cont or state) begin
-		next_state = state;
-		next_A = A;
-		next_cont = cont;
 		z = 8'b00000000;
 		out = 1'b0;
 		case(state)

@@ -1,0 +1,11 @@
+MODULE: tick_light;
+INPUT: clk, reset;
+OUTPUT: red_led;
+        MEMORY: value_led;
+	SEQUENCE(0):
+	END_SEQUENCE;
+	CONTROL RESET (0):
+		red_led = value_led;
+                value_led <= !(value_led);
+	END_CONTROL;
+END_MODULE;

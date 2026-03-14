@@ -41,9 +41,13 @@ public class SVToVTest {
 
     }
 
-
-    // TODO add test methods here.
-    // The methods must be annotated with annotation @Test. For example:
+    @Test
+    public void test_RTL_tick_led__ok_control() {
+        InputOutputReferencedByFilesTest.testEqualResultSvToV(
+                ex_gen.getContentByFilename("sv/RTL_tick_led_ok_control.sv"),
+                ex_gen.getContentByFilename("v/RTL_tick_led_ok_control.v"));
+    }
+ 
     @Test
     public void test_RTL_tick_led() {
         InputOutputReferencedByFilesTest.testEqualResultSvToV(

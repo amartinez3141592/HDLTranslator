@@ -19,7 +19,6 @@ module empty(
 		end
 	end
 	always_comb begin 
-		next_state = state;
 		led = 3'b000;
 		case(state)
 			S0: begin

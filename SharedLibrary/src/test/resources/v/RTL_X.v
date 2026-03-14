@@ -34,13 +34,9 @@ module RTL_X(
 		end
 	end
 	always @(PP or FF_L or pos or pst or Flag or state) begin
-		next_state = state;
-		next_pos = pos;
-		next_pst = pst;
-		next_Flag = Flag;
 		Posicion = pos;
 		Pista = pst;
-		Flag = !(Flag);
+		next_Flag = !(Flag);
 		Comando = 2'b00;
 		case(state)
 			S0: begin

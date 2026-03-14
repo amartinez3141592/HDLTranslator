@@ -52,6 +52,13 @@ public class HdlToSVTest {
     }
 
     @Test
+    public void test_RTL_tick_led_control() {
+        InputOutputReferencedByFilesTest.testEqualResultHdlToSv(
+                ex_gen.getContentByFilename("hdl/RTL_tick_led_ok_control.hdl"),
+                ex_gen.getContentByFilename("sv/RTL_tick_led_ok_control.sv"));
+    }
+
+    @Test
     public void test_RTL_tick_led_bad() {
         try {
 
